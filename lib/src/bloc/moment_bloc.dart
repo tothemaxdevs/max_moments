@@ -150,7 +150,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       emit(PostLikeDislikeLoadingState());
       Response response = await _api.postLikeDislike(event.id);
       if (response.statusCode == 200) {
-        emit(PostLikeDislikeLoadedState(response));
+        emit(PostLikeDislikeLoadedState(data: response, id: event.id));
       } else {
         emit(PostLikeDislikeFailedState(response.statusMessage));
       }
@@ -165,7 +165,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       emit(PostDoubleTapLikeLoadingState());
       Response response = await _api.postDoubleTapLike(event.id);
       if (response.statusCode == 200) {
-        emit(PostDoubleTapLikeLoadedState(response));
+        emit(PostDoubleTapLikeLoadedState(data: response, id: event.id));
       } else {
         emit(PostDoubleTapLikeFailedState(response.statusMessage));
       }

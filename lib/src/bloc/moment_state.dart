@@ -97,7 +97,8 @@ class PostLikeDislikeLoadingState extends MomentsState {}
 
 class PostLikeDislikeLoadedState extends MomentsState {
   final Response? data;
-  PostLikeDislikeLoadedState(this.data);
+  String? id;
+  PostLikeDislikeLoadedState({this.data, this.id});
 }
 
 class PostLikeDislikeErrorState extends MomentsState {
@@ -114,7 +115,8 @@ class PostDoubleTapLikeLoadingState extends MomentsState {}
 
 class PostDoubleTapLikeLoadedState extends MomentsState {
   final Response? data;
-  PostDoubleTapLikeLoadedState(this.data);
+  final String? id;
+  PostDoubleTapLikeLoadedState({this.data, this.id});
 }
 
 class PostDoubleTapLikeErrorState extends MomentsState {

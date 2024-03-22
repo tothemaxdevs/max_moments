@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:max_moments/max_moments.dart';
@@ -71,6 +70,8 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
         });
       }
     }
+
+    _getHitView();
   }
 
   void onDoubleTapLike(int index, String? id) {
@@ -143,6 +144,7 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
               )),
         )
       ]),
+      resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.black,
       body: BlocProvider(
@@ -162,8 +164,8 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
                 momentsList = state.data!.moments;
                 _controllers = List.generate(
                   momentsList!.length,
-                  (index) => CachedVideoPlayerController.network(
-                      momentsList![index].media ?? ''),
+                  (index) => CachedVideoPlayerController.networkUrl(
+                      Uri.parse(momentsList![index].media ?? '')),
                 );
                 _initializeControllers();
                 pageController?.addListener(_onPageChanged);
@@ -189,14 +191,14 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
             } else if (state is GetMomentDetailErrorState) {
             } else if (state is PostLikeDislikeLoadingState) {
             } else if (state is PostLikeDislikeLoadedState) {
-              _bloc.add(GetMomentsDetailEvent(momentsList![_currentPage].id));
+              _getHitView(id: state.id);
             } else if (state is PostLikeDislikeFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostLikeDislikeErrorState) {
               showToastError(context, state.message!);
             } else if (state is PostDoubleTapLikeLoadingState) {
             } else if (state is PostDoubleTapLikeLoadedState) {
-              _bloc.add(GetMomentsDetailEvent(momentsList![_currentPage].id));
+              _getHitView(id: state.id);
             } else if (state is PostDoubleTapLikeFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostDoubleTapLikeErrorState) {
@@ -319,22 +321,13 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
                                         _showComment(moment);
                                       },
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(right: 10.0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Icon(
-                                            Icons.more_horiz,
-                                            color: Colors.white,
-                                            size: 30,
-                                          )
-                                        ],
-                                      ),
+                                    MomentsButton(
+                                      icon: ImageConstants.more,
+                                      count: moment.commentCount,
+                                      withText: false,
+                                      onTap: () {
+                                        // _showComment(moment);
+                                      },
                                     ),
                                   ],
                                 )
@@ -380,5 +373,9 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
         });
       },
     );
+  }
+
+  void _getHitView({String? id}) {
+    _bloc.add(GetMomentsDetailEvent(id ?? momentsList![_currentPage].id));
   }
 }

@@ -40,6 +40,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocProvider(
         create: (context) => _bloc,
         child: BlocConsumer<MomentsBloc, MomentsState>(
