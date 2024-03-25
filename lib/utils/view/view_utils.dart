@@ -7,7 +7,7 @@ import 'package:shimmer/shimmer.dart';
 typedef ChildBuilder = Widget Function(
     BuildContext context, ScrollController scrollController);
 
-bottomComment(
+bottomSheet(
   BuildContext context,
   ChildBuilder childBuilder, {
   String? title,
@@ -66,7 +66,8 @@ bottomComment(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           title,
-                          style: const TextStyle(fontSize: 20),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       ),
                     const SizedBox(

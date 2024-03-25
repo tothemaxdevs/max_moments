@@ -40,8 +40,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: InstaReelsViewer(),
+    return Scaffold(
+      body: MaxMoments(
+        url: '',
+        apiKey: '',
+        accessToken: '',
+      ),
     );
   }
 }

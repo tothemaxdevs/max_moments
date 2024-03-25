@@ -7,4 +7,6 @@ class ImageConstants {
   static const String sendchat = 'assets/ic_send.svg';
   static const String sendchatInactive = 'assets/ic_send_inactive.svg';
   static const String isMerchant = 'assets/ic_merchant.svg';
+  static const String edit = 'assets/ic_edit.svg';
+  static const String delete = 'assets/ic_delete.svg';
 }

@@ -6,23 +6,32 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/src/bloc/moment_bloc.dart';
 import 'package:max_moments/src/components/comment_widget.dart';
+import 'package:max_moments/src/components/more_option_widget.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 import 'package:max_moments/utils/view/page_view.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
-
 import 'components/moments_button.dart';
 
-class InstaReelsViewer extends StatefulWidget {
-  const InstaReelsViewer({
-    Key? key,
-  }) : super(key: key);
+class MaxMoments extends StatefulWidget {
+  MaxMoments(
+      {Key? key,
+      required this.url,
+      required this.apiKey,
+      required this.accessToken,
+      this.onTapDelete,
+      this.onTapEdit,
+      this.showMoreButton = true})
+      : super(key: key);
+
+  String url, apiKey, accessToken;
+  Function(Moment)? onTapEdit, onTapDelete;
+  bool? showMoreButton;
 
   @override
-  State<InstaReelsViewer> createState() => _InstaReelsViewerState();
+  State<MaxMoments> createState() => _MaxMomentsState();
 }
 
-class _InstaReelsViewerState extends State<InstaReelsViewer> {
-  // List<ReelsModel> moments = [];
+class _MaxMomentsState extends State<MaxMoments> {
   late List<CachedVideoPlayerController> _controllers;
   int _currentPage = 0;
   bool isMute = false;
@@ -35,7 +44,10 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
 
   @override
   void initState() {
-    _bloc.add(GetMomentsListEvent());
+    _bloc.add(GetMomentsListEvent(
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
     super.initState();
   }
 
@@ -87,7 +99,11 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
       likeWidth = 0.0;
       setState(() {});
     });
-    _bloc.add(PostDoubleTapLikeEvent(id: id));
+    _bloc.add(PostDoubleTapLikeEvent(
+        id: id,
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
     setState(() {});
   }
 
@@ -102,7 +118,11 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
   }
 
   void likeUnlike(int index, {String? id}) {
-    _bloc.add(PostLikeDislikeEvent(id: id));
+    _bloc.add(PostLikeDislikeEvent(
+        id: id,
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
   }
 
   void muteUnmuteAll() {
@@ -321,14 +341,15 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
                                         _showComment(moment);
                                       },
                                     ),
-                                    MomentsButton(
-                                      icon: ImageConstants.more,
-                                      count: moment.commentCount,
-                                      withText: false,
-                                      onTap: () {
-                                        // _showComment(moment);
-                                      },
-                                    ),
+                                    if (widget.showMoreButton == true)
+                                      MomentsButton(
+                                        icon: ImageConstants.more,
+                                        count: moment.commentCount,
+                                        withText: false,
+                                        onTap: () {
+                                          _showMoreOption(moment);
+                                        },
+                                      ),
                                   ],
                                 )
                               ],
@@ -361,7 +382,7 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
   }
 
   _showComment(Moment moment) {
-    return bottomComment(
+    return bottomSheet(
       context,
       (BuildContext context, ScrollController scrollController) {
         return StatefulBuilder(builder: (BuildContext context, mySetState) {
@@ -369,13 +390,39 @@ class _InstaReelsViewerState extends State<InstaReelsViewer> {
               child: CommentWidget(
             moment: moment,
             controller: scrollController,
+            accessToken: widget.accessToken,
+            url: widget.url,
+            apiKey: widget.apiKey,
           ));
         });
       },
+      title: 'Comment',
+    );
+  }
+
+  _showMoreOption(Moment moment) {
+    return bottomSheet(
+      context,
+      (BuildContext context, ScrollController scrollController) {
+        return StatefulBuilder(builder: (BuildContext context, mySetState) {
+          return Expanded(
+              child: MoreOptionWidget(
+            moment: moment,
+            onTapDelete: widget.onTapDelete,
+            onTapEdit: widget.onTapEdit,
+          ));
+        });
+      },
+      title: 'More',
+      maxChildSize: 0.25, // Full screen on scroll
+      minChildSize: 0.25,
     );
   }
 
   void _getHitView({String? id}) {
-    _bloc.add(GetMomentsDetailEvent(id ?? momentsList![_currentPage].id));
+    _bloc.add(GetMomentsDetailEvent(id ?? momentsList![_currentPage].id,
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
   }
 }

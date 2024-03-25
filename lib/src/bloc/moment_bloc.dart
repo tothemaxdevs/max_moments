@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:bloc/bloc.dart';
-import 'package:max_moments/src/api/payment_api.dart';
+import 'package:max_moments/src/api/moment_api.dart';
 import 'package:max_moments/src/models/all_comment_list_result/all_comment_list_result.dart';
 import 'package:max_moments/src/models/all_reply_list_result/all_reply_list_result.dart';
 import 'package:max_moments/src/models/comment_detail/comment_detail_result.dart';
@@ -35,7 +35,11 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _getMomentList(GetMomentsListEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetMomentsListLoadingState());
-      Response response = await _api.getMomentList(params: event.params);
+      Response response = await _api.getMomentList(
+          params: event.params,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         MomentListResult result = MomentListResult.fromJson(
             ResponseData.fromJson(response.data).data);
@@ -56,7 +60,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       GetMomentsDetailEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetMomentDetailLoadingState());
-      Response response = await _api.getMomentDetail(event.id);
+      Response response = await _api.getMomentDetail(event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(GetMomentDetailLoadedState(MomentsDetailResult.fromJson(
             ResponseData.fromJson(response.data).data)));
@@ -72,7 +79,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       GetCommentDetailEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetCommentDetailLoadingState());
-      Response response = await _api.getCommentDetail(event.id);
+      Response response = await _api.getCommentDetail(event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(GetCommentDetailLoadedState(CommentDetailResult.fromJson(
             ResponseData.fromJson(response.data).data)));
@@ -87,7 +97,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _getReplyDetail(GetReplyDetailEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetReplyDetailLoadingState());
-      Response response = await _api.getReplyDetail(event.id);
+      Response response = await _api.getReplyDetail(event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(GetReplyDetailLoadedState(
             data: ReplyDetailResult.fromJson(
@@ -104,8 +117,12 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _getAllComment(GetAllCommentEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetAllCommentLoadingState());
-      Response response =
-          await _api.getAllComment(params: event.params, id: event.id);
+      Response response = await _api.getAllComment(
+          params: event.params,
+          id: event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         AllCommentListResult result = AllCommentListResult.fromJson(
             ResponseData.fromJson(response.data).data);
@@ -125,8 +142,12 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _getMomentReply(GetAllReplyEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(GetAllReplyLoadingState());
-      Response response =
-          await _api.getReplyList(params: event.params, id: event.id);
+      Response response = await _api.getReplyList(
+          params: event.params,
+          id: event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         AllReplyListResult result = AllReplyListResult.fromJson(
             ResponseData.fromJson(response.data).data);
@@ -148,7 +169,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       PostLikeDislikeEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(PostLikeDislikeLoadingState());
-      Response response = await _api.postLikeDislike(event.id);
+      Response response = await _api.postLikeDislike(event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(PostLikeDislikeLoadedState(data: response, id: event.id));
       } else {
@@ -163,7 +187,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       PostDoubleTapLikeEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(PostDoubleTapLikeLoadingState());
-      Response response = await _api.postDoubleTapLike(event.id);
+      Response response = await _api.postDoubleTapLike(event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(PostDoubleTapLikeLoadedState(data: response, id: event.id));
       } else {
@@ -177,8 +204,12 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _postComment(PostCommentEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(PostCommentLoadingState());
-      Response response =
-          await _api.postComment(body: event.body, id: event.id);
+      Response response = await _api.postComment(
+          body: event.body,
+          id: event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(PostCommentLoadedState(PostCommentResult.fromJson(
             ResponseData.fromJson(response.data).data)));
@@ -193,8 +224,12 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
   _postReply(PostReplyEvent event, Emitter<MomentsState> emit) async {
     try {
       emit(PostReplyLoadingState());
-      Response response =
-          await _api.postReply(params: event.body, id: event.id);
+      Response response = await _api.postReply(
+          params: event.body,
+          id: event.id,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
       if (response.statusCode == 200) {
         emit(PostReplyLoadedState(
             data: PostReplyResult.fromJson(

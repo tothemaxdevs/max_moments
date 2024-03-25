@@ -14,7 +14,16 @@ import 'package:max_moments/utils/view/view_utils.dart';
 class CommentWidget extends StatefulWidget {
   ScrollController? controller;
   Moment moment;
-  CommentWidget({super.key, this.controller, required this.moment});
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  CommentWidget(
+      {super.key,
+      this.controller,
+      required this.moment,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
 
   @override
   State<CommentWidget> createState() => _CommentWidgetState();
@@ -33,7 +42,12 @@ class _CommentWidgetState extends State<CommentWidget> {
     prmComment['limit'] = 20;
     prmComment['page'] = 1;
     commentBoxData = CommentBoxData(isReply: false, targetId: widget.moment.id);
-    _bloc.add(GetAllCommentEvent(id: widget.moment.id, params: prmComment));
+    _bloc.add(GetAllCommentEvent(
+        id: widget.moment.id,
+        params: prmComment,
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
     super.initState();
   }
 
@@ -81,7 +95,10 @@ class _CommentWidgetState extends State<CommentWidget> {
               showToastError(context, state.message!);
             } else if (state is PostCommentLoadingState) {
             } else if (state is PostCommentLoadedState) {
-              _bloc.add(GetCommentDetailEvent(state.data!.comment!.id));
+              _bloc.add(GetCommentDetailEvent(state.data!.comment!.id,
+                  url: widget.url,
+                  accessToken: widget.accessToken,
+                  apiKey: widget.apiKey));
             } else if (state is PostCommentFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostCommentErrorState) {
@@ -89,7 +106,10 @@ class _CommentWidgetState extends State<CommentWidget> {
             } else if (state is PostReplyLoadingState) {
             } else if (state is PostReplyLoadedState) {
               _bloc.add(GetReplyDetailEvent(
-                  state.data!.reply!.id, state.indexComment));
+                  state.data!.reply!.id, state.indexComment,
+                  url: widget.url,
+                  accessToken: widget.accessToken,
+                  apiKey: widget.apiKey));
             } else if (state is PostReplyFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostReplyErrorState) {
@@ -136,7 +156,6 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget _buildView() {
     return Column(
       children: [
-        const Text('Comment'),
         Expanded(
             child: ListView.builder(
           controller: widget.controller,
@@ -192,15 +211,22 @@ class _CommentWidgetState extends State<CommentWidget> {
           },
           onTapComment: (v) {
             Map<String, dynamic> body = {'comment': v};
-            _bloc.add(
-                PostCommentEvent(body: body, id: commentBoxData!.targetId));
+            _bloc.add(PostCommentEvent(
+                body: body,
+                id: commentBoxData!.targetId,
+                url: widget.url,
+                accessToken: widget.accessToken,
+                apiKey: widget.apiKey));
           },
           onTapReply: (v) {
             Map<String, dynamic> body = {'reply': v};
             _bloc.add(PostReplyEvent(
                 body: body,
                 id: commentBoxData!.targetId,
-                indexComment: commentBoxData!.indexComment));
+                indexComment: commentBoxData!.indexComment,
+                url: widget.url,
+                accessToken: widget.accessToken,
+                apiKey: widget.apiKey));
             commentBoxData!.isReply = false;
             _setComment(targetId: widget.moment.id);
             setState(() {});
@@ -227,7 +253,12 @@ class _CommentWidgetState extends State<CommentWidget> {
           ? comments.replies!.pagination!.totalItem! + 1
           : 1
     };
-    _bloc.add(
-        GetAllReplyEvent(id: comments.id, params: params, indexComment: index));
+    _bloc.add(GetAllReplyEvent(
+        id: comments.id,
+        params: params,
+        indexComment: index,
+        url: widget.url,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey));
   }
 }
