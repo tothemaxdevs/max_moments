@@ -20,12 +20,14 @@ class MaxMoments extends StatefulWidget {
       required this.accessToken,
       this.onTapDelete,
       this.onTapEdit,
-      this.showMoreButton = true})
+      this.showMoreButton = true,
+      this.additionalParams})
       : super(key: key);
 
   String url, apiKey, accessToken;
   Function(Moment)? onTapEdit, onTapDelete;
   bool? showMoreButton;
+  Map<String, dynamic>? additionalParams;
 
   @override
   State<MaxMoments> createState() => _MaxMomentsState();
@@ -45,9 +47,11 @@ class _MaxMomentsState extends State<MaxMoments> {
   @override
   void initState() {
     _bloc.add(GetMomentsListEvent(
-        url: widget.url,
-        accessToken: widget.accessToken,
-        apiKey: widget.apiKey));
+      params: widget.additionalParams,
+      url: widget.url,
+      accessToken: widget.accessToken,
+      apiKey: widget.apiKey,
+    ));
     super.initState();
   }
 
