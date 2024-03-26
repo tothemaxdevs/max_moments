@@ -21,13 +21,15 @@ class MaxMoments extends StatefulWidget {
       this.onTapDelete,
       this.onTapEdit,
       this.showMoreButton = true,
-      this.additionalParams})
+      this.additionalParams,
+      this.additionalButton})
       : super(key: key);
 
   String url, apiKey, accessToken;
   Function(Moment)? onTapEdit, onTapDelete;
   bool? showMoreButton;
   Map<String, dynamic>? additionalParams;
+  Widget? additionalButton;
 
   @override
   State<MaxMoments> createState() => _MaxMomentsState();
@@ -329,6 +331,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                                 const Spacer(),
                                 Column(
                                   children: [
+                                    widget.additionalButton!,
                                     MomentsButton(
                                       icon: moment.isLiked == false
                                           ? ImageConstants.unlike

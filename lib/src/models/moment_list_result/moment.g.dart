@@ -20,6 +20,7 @@ Moment _$MomentFromJson(Map<String, dynamic> json) => Moment(
       likeCount: json['like_count'] as int?,
       commentCount: json['comment_count'] as int?,
       isLiked: json['is_liked'] as bool?,
+      isBookmark: json['is_bookmark'] as bool?,
     );
 
 Map<String, dynamic> _$MomentToJson(Moment instance) => <String, dynamic>{
@@ -36,4 +37,5 @@ Map<String, dynamic> _$MomentToJson(Moment instance) => <String, dynamic>{
       'like_count': instance.likeCount,
       'comment_count': instance.commentCount,
       'is_liked': instance.isLiked,
+      'is_bookmark': instance.isBookmark,
     };
