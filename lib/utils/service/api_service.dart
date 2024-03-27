@@ -112,6 +112,4 @@ class ApiService {
   }
 }
 
-class LoggingInterceptor extends InterceptorsWrapper {
-  int _maxCharactersPerLine = 200;
-}
+class LoggingInterceptor extends InterceptorsWrapper {}

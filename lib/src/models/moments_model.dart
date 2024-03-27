@@ -40,34 +40,33 @@ class ReelsModel {
     description = json['description'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     if (json['reel_comments'] != null) {
       reelComments = <ReelComments>[];
       json['reel_comments'].forEach((v) {
-        reelComments!.add(new ReelComments.fromJson(v));
+        reelComments!.add(ReelComments.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['url'] = this.url;
-    data['like_count'] = this.likeCount;
-    data['comment_count'] = this.commentCount;
-    data['send_count'] = this.sendCount;
-    data['is_liked'] = this.isLiked;
-    data['music_name'] = this.musicName;
-    data['music_image_url'] = this.musicImageUrl;
-    data['description'] = this.description;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['url'] = url;
+    data['like_count'] = likeCount;
+    data['comment_count'] = commentCount;
+    data['send_count'] = sendCount;
+    data['is_liked'] = isLiked;
+    data['music_name'] = musicName;
+    data['music_image_url'] = musicImageUrl;
+    data['description'] = description;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
-    if (this.reelComments != null) {
-      data['reel_comments'] =
-          this.reelComments!.map((v) => v.toJson()).toList();
+    if (reelComments != null) {
+      data['reel_comments'] = reelComments!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -99,13 +98,13 @@ class User {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['user_name'] = this.userName;
-    data['profile_url'] = this.profileUrl;
-    data['is_follow'] = this.isFollow;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['user_name'] = userName;
+    data['profile_url'] = profileUrl;
+    data['is_follow'] = isFollow;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -125,17 +124,17 @@ class ReelComments {
     cmment = json['cmment'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['cmment'] = this.cmment;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.user != null) {
-      data['user'] = this.user!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['cmment'] = cmment;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
     return data;
   }

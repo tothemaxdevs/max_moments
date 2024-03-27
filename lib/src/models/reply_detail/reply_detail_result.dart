@@ -1,7 +1,7 @@
-import 'package:max_moments/src/models/all_reply_list_result/item.dart';
+import 'package:max_moments/src/models/all_reply_list_result/reply.dart';
 
 class ReplyDetailResult {
-  final Item reply;
+  final Reply reply;
 
   ReplyDetailResult({
     required this.reply,
@@ -9,7 +9,7 @@ class ReplyDetailResult {
 
   factory ReplyDetailResult.fromJson(Map<String, dynamic> json) {
     return ReplyDetailResult(
-      reply: Item.fromJson(json['reply']),
+      reply: Reply.fromJson(json['reply']),
     );
   }
 }

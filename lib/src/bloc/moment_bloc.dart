@@ -126,7 +126,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       if (response.statusCode == 200) {
         AllCommentListResult result = AllCommentListResult.fromJson(
             ResponseData.fromJson(response.data).data);
-        if (result.comments!.items!.isEmpty) {
+        if (result.comments!.isEmpty) {
           emit(GetAllCommentEmptyState(response.statusMessage));
         } else {
           emit(GetAllCommentLoadedState(result));
@@ -151,7 +151,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       if (response.statusCode == 200) {
         AllReplyListResult result = AllReplyListResult.fromJson(
             ResponseData.fromJson(response.data).data);
-        if (result.replies!.items!.isEmpty) {
+        if (result.replies!.isEmpty) {
           emit(GetAllReplyEmptyState(response.statusMessage));
         } else {
           emit(GetAllReplyLoadedState(

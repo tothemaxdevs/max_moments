@@ -40,9 +40,9 @@ String handleError(Error error) {
   return errorDescription;
 }
 
-String handleErrorDio(DioException DioException) {
+String handleErrorDio(DioException dioException) {
   String errorDescription = "";
-  switch (DioException.type) {
+  switch (dioException.type) {
     case DioExceptionType.cancel:
       errorDescription = "Request to API server was cancelled";
       break;
@@ -57,7 +57,7 @@ String handleErrorDio(DioException DioException) {
       break;
     case DioExceptionType.connectionError:
       errorDescription =
-          "Received invalid status code: ${DioException.response!.statusCode}";
+          "Received invalid status code: ${dioException.response!.statusCode}";
       break;
     case DioExceptionType.connectionTimeout:
       errorDescription = "Connection with API server";
@@ -67,7 +67,7 @@ String handleErrorDio(DioException DioException) {
       break;
     case DioExceptionType.badResponse:
       errorDescription =
-          "Received invalid status code: ${DioException.response!.statusCode}";
+          "Received invalid status code: ${dioException.response!.statusCode}";
       break;
   }
   return errorDescription;

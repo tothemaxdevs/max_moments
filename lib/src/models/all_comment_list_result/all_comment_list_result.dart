@@ -1,17 +1,21 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'comments.dart';
+import 'comment.dart';
+import 'pagination.dart';
 
 part 'all_comment_list_result.g.dart';
 
 @JsonSerializable()
 class AllCommentListResult {
-  Comments? comments;
+  List<Comment>? comments;
+  Pagination? pagination;
 
-  AllCommentListResult({this.comments});
+  AllCommentListResult({this.comments, this.pagination});
 
   @override
-  String toString() => 'AllCommentListResult(comments: $comments)';
+  String toString() {
+    return 'AllCommentListResult(comments: $comments, pagination: $pagination)';
+  }
 
   factory AllCommentListResult.fromJson(Map<String, dynamic> json) {
     return _$AllCommentListResultFromJson(json);
@@ -20,10 +24,12 @@ class AllCommentListResult {
   Map<String, dynamic> toJson() => _$AllCommentListResultToJson(this);
 
   AllCommentListResult copyWith({
-    Comments? comments,
+    List<Comment>? comments,
+    Pagination? pagination,
   }) {
     return AllCommentListResult(
       comments: comments ?? this.comments,
+      pagination: pagination ?? this.pagination,
     );
   }
 }

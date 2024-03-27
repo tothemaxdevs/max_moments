@@ -3,21 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:max_moments/src/bloc/moment_bloc.dart';
 import 'package:max_moments/src/components/comment_box_widget.dart';
 import 'package:max_moments/src/components/comment_user_widget.dart';
-import 'package:max_moments/src/models/all_reply_list_result/pagination.dart';
-import 'package:max_moments/src/models/all_reply_list_result/replies.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 import 'package:max_moments/utils/view/page_view.dart';
-import 'package:max_moments/src/models/all_comment_list_result/item.dart'
+import 'package:max_moments/src/models/all_comment_list_result/comment.dart'
     as cmnt;
 import 'package:max_moments/utils/view/view_utils.dart';
 
 class CommentWidget extends StatefulWidget {
-  ScrollController? controller;
-  Moment moment;
+  final ScrollController? controller;
+  final Moment moment;
   final String? url;
   final String? accessToken;
   final String? apiKey;
-  CommentWidget(
+  const CommentWidget(
       {super.key,
       this.controller,
       required this.moment,
@@ -34,7 +32,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   Map<String, dynamic> prmComment = {};
   PageMode mode = PageMode.loading;
 
-  List<cmnt.Item> commentList = [];
+  List<cmnt.Comment> commentList = [];
 
   CommentBoxData? commentBoxData;
   @override
@@ -65,9 +63,10 @@ class _CommentWidgetState extends State<CommentWidget> {
             if (state is GetAllCommentLoadingState) {
               mode = PageMode.loading;
             } else if (state is GetAllCommentLoadedState) {
-              commentList.addAll(state.data!.comments!.items!);
+              commentList.addAll(state.data!.comments!);
               mode = PageMode.loaded;
             } else if (state is GetAllCommentEmptyState) {
+              _isCommentIsEmpty();
               mode = PageMode.empty;
             } else if (state is GetAllCommentFailedState) {
               mode = PageMode.failed;
@@ -80,13 +79,11 @@ class _CommentWidgetState extends State<CommentWidget> {
               final dataReplies = state.data?.replies;
 
               if (dataReplies != null) {
-                comment.replies =
-                    comment.replies ?? Replies(); // Initialize replies if null
-                comment.replies!.items ??= []; // Initialize items if null
-                comment.replies!.items!.addAll(dataReplies.items!);
-                comment.replies!.pagination = dataReplies.pagination;
+                comment.replyPagination = state.data!.pagination;
+                comment.reply = [];
+                comment.reply!.addAll(dataReplies);
               } else {
-                comment.replies = dataReplies;
+                comment.reply = dataReplies;
               }
               setState(() {});
             } else if (state is GetAllReplyFailedState) {
@@ -117,24 +114,21 @@ class _CommentWidgetState extends State<CommentWidget> {
             } else if (state is GetCommentDetailLoadingState) {
             } else if (state is GetCommentDetailLoadedState) {
               commentList.insert(0, state.data!.comment);
+              _isCommentIsEmpty();
             } else if (state is GetCommentDetailFailedState) {
               showToastError(context, state.message!);
             } else if (state is GetCommentDetailErrorState) {
               showToastError(context, state.message!);
             } else if (state is GetReplyDetailLoadingState) {
             } else if (state is GetReplyDetailLoadedState) {
-              commentList[state.indexComment!].replies != null
+              commentList[state.indexComment!].reply != null
                   ? commentList[state.indexComment!]
-                      .replies!
-                      .items!
+                      .reply!
                       .insert(0, state.data!.reply)
-                  : commentList[state.indexComment!].replies = Replies(
-                      items: [state.data!.reply],
-                      pagination: Pagination(
-                          totalItem: 1,
-                          currentPage: 1,
-                          limit: 10,
-                          totalPage: 1));
+                  : commentList[state.indexComment!].reply = [
+                      state.data!.reply
+                    ];
+              _isCommentIsEmpty();
             } else if (state is GetReplyDetailFailedState) {
               showToastError(context, state.message!);
             } else if (state is GetReplyDetailErrorState) {
@@ -149,8 +143,24 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget _viewState() {
     return MyPageView(
       view: _buildView(),
+      customEmpty: Column(
+        children: [
+          const Expanded(child: Center(child: Text('Kosong'))),
+          _commentBoxView()
+        ],
+      ),
       mode: mode,
     );
+  }
+
+  _isCommentIsEmpty() {
+    setState(() {
+      if (commentList.isEmpty) {
+        mode = PageMode.empty;
+      } else {
+        mode = PageMode.loaded;
+      }
+    });
   }
 
   Widget _buildView() {
@@ -169,8 +179,8 @@ class _CommentWidgetState extends State<CommentWidget> {
               name: comments.name!,
               passedTime: comments.momentsPassed!,
               replyCount: comments.replyCount! -
-                  (comments.replies != null
-                      ? comments.replies!.pagination!.totalItem!
+                  (comments.replyPagination != null
+                      ? comments.replyPagination!.totalItem!
                       : 0),
               isMerchant: comments.isMerchant ?? false,
               onTapReply: () {
@@ -184,56 +194,65 @@ class _CommentWidgetState extends State<CommentWidget> {
                 _seeReply(comments, index);
               },
               replySection: ListView.builder(
-                itemCount: comments.replies != null
-                    ? comments.replies!.items!.length
-                    : 0,
+                itemCount: comments.reply != null ? comments.reply!.length : 0,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (BuildContext context, int i) {
-                  var replies = comments.replies!.items![i];
+                  var replies = comments.reply![i];
                   return UserCommentWidget(
                     avatar: replies.userAvatar!,
                     comment: replies.reply!,
                     name: replies.name!,
                     passedTime: replies.momentsPassed!,
                     isMerchant: replies.isMerchant ?? false,
+                    onTapReply: () {
+                      _setComment(
+                          targetId: comments.id,
+                          replyTo: replies.name,
+                          isReply: true,
+                          index: index);
+                    },
                   );
                 },
               ),
             );
           },
         )),
-        CommentBox(
-          isReply: commentBoxData!.isReply!,
-          replyTo: commentBoxData!.replyTo,
-          onTapCloseReply: () {
-            _setComment(targetId: widget.moment.id);
-          },
-          onTapComment: (v) {
-            Map<String, dynamic> body = {'comment': v};
-            _bloc.add(PostCommentEvent(
-                body: body,
-                id: commentBoxData!.targetId,
-                url: widget.url,
-                accessToken: widget.accessToken,
-                apiKey: widget.apiKey));
-          },
-          onTapReply: (v) {
-            Map<String, dynamic> body = {'reply': v};
-            _bloc.add(PostReplyEvent(
-                body: body,
-                id: commentBoxData!.targetId,
-                indexComment: commentBoxData!.indexComment,
-                url: widget.url,
-                accessToken: widget.accessToken,
-                apiKey: widget.apiKey));
-            commentBoxData!.isReply = false;
-            _setComment(targetId: widget.moment.id);
-            setState(() {});
-          },
-          avatar: '',
-        )
+        _commentBoxView()
       ],
+    );
+  }
+
+  Widget _commentBoxView() {
+    return CommentBox(
+      isReply: commentBoxData!.isReply!,
+      replyTo: commentBoxData!.replyTo,
+      onTapCloseReply: () {
+        _setComment(targetId: widget.moment.id);
+      },
+      onTapComment: (v) {
+        Map<String, dynamic> body = {'comment': v};
+        _bloc.add(PostCommentEvent(
+            body: body,
+            id: commentBoxData!.targetId,
+            url: widget.url,
+            accessToken: widget.accessToken,
+            apiKey: widget.apiKey));
+      },
+      onTapReply: (v) {
+        Map<String, dynamic> body = {'reply': v};
+        _bloc.add(PostReplyEvent(
+            body: body,
+            id: commentBoxData!.targetId,
+            indexComment: commentBoxData!.indexComment,
+            url: widget.url,
+            accessToken: widget.accessToken,
+            apiKey: widget.apiKey));
+        commentBoxData!.isReply = false;
+        _setComment(targetId: widget.moment.id);
+        setState(() {});
+      },
+      avatar: '',
     );
   }
 
@@ -246,12 +265,11 @@ class _CommentWidgetState extends State<CommentWidget> {
     setState(() {});
   }
 
-  void _seeReply(cmnt.Item comments, int index) {
+  void _seeReply(cmnt.Comment comments, int index) {
     Map<String, dynamic> params = {
       'limit': 10,
-      'page': comments.replies != null
-          ? comments.replies!.pagination!.totalItem! + 1
-          : 1
+      'page':
+          comments.reply != null ? comments.replyPagination!.totalItem! + 1 : 1
     };
     _bloc.add(GetAllReplyEvent(
         id: comments.id,

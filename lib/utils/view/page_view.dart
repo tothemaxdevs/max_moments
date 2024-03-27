@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 enum PageMode { loading, loaded, error, empty, failed, notFound }
 
 class MyPageView extends StatefulWidget {
-  PageMode mode;
-  Widget? view;
-  Widget? customLoading, customError, customEmpty, customFailed, customNotfound;
-  MyPageView(
+  final PageMode mode;
+  final Widget? view;
+  final Widget? customLoading,
+      customError,
+      customEmpty,
+      customFailed,
+      customNotfound;
+  const MyPageView(
       {Key? key,
       this.view,
       this.mode = PageMode.loading,

@@ -7,10 +7,10 @@ class Pagination {
   @JsonKey(name: 'total_item')
   int? totalItem;
   @JsonKey(name: 'total_page')
-  int? totalPage;
+  dynamic totalPage;
   @JsonKey(name: 'current_page')
-  int? currentPage;
-  int? limit;
+  dynamic currentPage;
+  dynamic limit;
 
   Pagination({
     this.totalItem,
@@ -32,9 +32,9 @@ class Pagination {
 
   Pagination copyWith({
     int? totalItem,
-    int? totalPage,
-    int? currentPage,
-    int? limit,
+    dynamic totalPage,
+    dynamic currentPage,
+    dynamic limit,
   }) {
     return Pagination(
       totalItem: totalItem ?? this.totalItem,

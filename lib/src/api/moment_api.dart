@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/utils/service/api_service.dart';
 
 class MomentAPI {
@@ -8,7 +7,7 @@ class MomentAPI {
   MomentAPI() : _apiService = ApiService();
 
   static const String moments = 'moments';
-  static const String momentDetail = 'moment';
+  static const String momentDetail = 'moments';
   static const String likeDislike = 'like-moment';
   static const String comment = 'comment-moment';
   static const String reply = 'reply-moment';

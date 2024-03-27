@@ -4,12 +4,12 @@ import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
 
 class CommentBox extends StatefulWidget {
-  String? avatar;
-  String? replyTo;
-  bool isReply;
-  Function(String)? onTapComment, onTapReply;
-  Function()? onTapCloseReply;
-  CommentBox({
+  final String? avatar;
+  final String? replyTo;
+  final bool isReply;
+  final Function(String)? onTapComment, onTapReply;
+  final Function()? onTapCloseReply;
+  const CommentBox({
     this.isReply = false,
     this.replyTo,
     this.avatar,
@@ -40,7 +40,7 @@ class _CommentBoxState extends State<CommentBox> {
               children: [
                 Text(
                   'Balas ke ${widget.replyTo}',
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
                 GestureDetector(
                   onTap: widget.onTapCloseReply,
@@ -93,7 +93,7 @@ class _CommentBoxState extends State<CommentBox> {
               ),
               GestureDetector(
                 onTap: () {
-                  if (widget.isReply!) {
+                  if (widget.isReply) {
                     widget.onTapReply!(controller.text);
                   } else {
                     widget.onTapComment!(controller.text);

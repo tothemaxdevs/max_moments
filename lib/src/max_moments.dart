@@ -13,7 +13,7 @@ import 'package:max_moments/utils/view/view_utils.dart';
 import 'components/moments_button.dart';
 
 class MaxMoments extends StatefulWidget {
-  MaxMoments(
+  const MaxMoments(
       {Key? key,
       required this.url,
       required this.apiKey,
@@ -25,11 +25,11 @@ class MaxMoments extends StatefulWidget {
       this.additionalButton})
       : super(key: key);
 
-  String url, apiKey, accessToken;
-  Function(Moment)? onTapEdit, onTapDelete;
-  bool? showMoreButton;
-  Map<String, dynamic>? additionalParams;
-  Widget? additionalButton;
+  final String url, apiKey, accessToken;
+  final Function(Moment)? onTapEdit, onTapDelete;
+  final bool? showMoreButton;
+  final Map<String, dynamic>? additionalParams;
+  final Widget? additionalButton;
 
   @override
   State<MaxMoments> createState() => _MaxMomentsState();
@@ -134,13 +134,13 @@ class _MaxMomentsState extends State<MaxMoments> {
   void muteUnmuteAll() {
     isMute = !isMute;
     if (isMute == true) {
-      _controllers.forEach((element) {
+      for (var element in _controllers) {
         element.setVolume(0.0);
-      });
+      }
     } else {
-      _controllers.forEach((element) {
+      for (var element in _controllers) {
         element.setVolume(10.0);
-      });
+      }
     }
     setState(() {});
   }
@@ -205,14 +205,15 @@ class _MaxMomentsState extends State<MaxMoments> {
               mode = PageMode.error;
             } else if (state is GetMomentDetailLoadingState) {
             } else if (state is GetMomentDetailLoadedState) {
-              int index = momentsList!.indexWhere(
-                  (element) => element.id == state.data!.moment!.id);
-              log(index.toString());
-              momentsList![index].isLiked = state.data!.moment!.isLiked;
-              momentsList![index].likeCount = state.data!.moment!.likeCount;
-              momentsList![index].commentCount =
-                  state.data!.moment!.commentCount;
-              setState(() {});
+              setState(() {
+                int index = momentsList!.indexWhere(
+                    (element) => element.id == state.data!.moment!.id);
+                log(index.toString());
+                momentsList![index].isLiked = state.data!.moment!.isLiked;
+                momentsList![index].likeCount = state.data!.moment!.likeCount;
+                momentsList![index].commentCount =
+                    state.data!.moment!.commentCount;
+              });
             } else if (state is GetMomentDetailFailedState) {
             } else if (state is GetMomentDetailErrorState) {
             } else if (state is PostLikeDislikeLoadingState) {
@@ -242,6 +243,12 @@ class _MaxMomentsState extends State<MaxMoments> {
         PageView.builder(
           itemCount: momentsList!.length,
           scrollDirection: Axis.vertical,
+          onPageChanged: (value) {
+            setState(() {
+              _currentPage = value;
+            });
+            _getHitView();
+          },
           itemBuilder: (BuildContext context, int index) {
             var moment = momentsList![index];
             return GestureDetector(
@@ -331,7 +338,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                                 const Spacer(),
                                 Column(
                                   children: [
-                                    widget.additionalButton!,
+                                    widget.additionalButton ?? const SizedBox(),
                                     MomentsButton(
                                       icon: moment.isLiked == false
                                           ? ImageConstants.unlike

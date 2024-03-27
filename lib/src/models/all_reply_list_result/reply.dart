@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'item.g.dart';
+part 'reply.g.dart';
 
 @JsonSerializable()
-class Item {
+class Reply {
   String? id;
   @JsonKey(name: 'user_id')
   String? userId;
@@ -25,7 +25,7 @@ class Item {
   @JsonKey(name: 'reply_to')
   String? replyTo;
 
-  Item({
+  Reply({
     this.id,
     this.userId,
     this.name,
@@ -42,14 +42,14 @@ class Item {
 
   @override
   String toString() {
-    return 'Item(id: $id, userId: $userId, name: $name, username: $username, userAvatar: $userAvatar, isMerchant: $isMerchant, restaurantName: $restaurantName, restaurantImage: $restaurantImage, reply: $reply, createdAt: $createdAt, momentsPassed: $momentsPassed, replyTo: $replyTo)';
+    return 'Reply(id: $id, userId: $userId, name: $name, username: $username, userAvatar: $userAvatar, isMerchant: $isMerchant, restaurantName: $restaurantName, restaurantImage: $restaurantImage, reply: $reply, createdAt: $createdAt, momentsPassed: $momentsPassed, replyTo: $replyTo)';
   }
 
-  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  factory Reply.fromJson(Map<String, dynamic> json) => _$ReplyFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ItemToJson(this);
+  Map<String, dynamic> toJson() => _$ReplyToJson(this);
 
-  Item copyWith({
+  Reply copyWith({
     String? id,
     String? userId,
     String? name,
@@ -63,7 +63,7 @@ class Item {
     String? momentsPassed,
     String? replyTo,
   }) {
-    return Item(
+    return Reply(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       name: name ?? this.name,

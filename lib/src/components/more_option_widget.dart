@@ -4,9 +4,9 @@ import 'package:max_moments/src/constant/image_constants.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 
 class MoreOptionWidget extends StatefulWidget {
-  Moment moment;
-  Function(Moment)? onTapEdit, onTapDelete;
-  MoreOptionWidget(
+  final Moment moment;
+  final Function(Moment)? onTapEdit, onTapDelete;
+  const MoreOptionWidget(
       {super.key, required this.moment, this.onTapEdit, this.onTapDelete});
 
   @override

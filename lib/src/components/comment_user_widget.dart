@@ -4,12 +4,12 @@ import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
 
 class UserCommentWidget extends StatelessWidget {
-  Widget? replySection;
-  String name, avatar, comment, passedTime;
-  bool withLike, isMerchant, loadingReply;
-  int? replyCount;
-  Function()? onTapReply, onTapViewReply;
-  UserCommentWidget({
+  final Widget? replySection;
+  final String name, avatar, comment, passedTime;
+  final bool withLike, isMerchant, loadingReply;
+  final int? replyCount;
+  final Function()? onTapReply, onTapViewReply;
+  const UserCommentWidget({
     this.replySection,
     required this.avatar,
     required this.comment,

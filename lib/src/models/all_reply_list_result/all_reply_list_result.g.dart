@@ -8,12 +8,16 @@ part of 'all_reply_list_result.dart';
 
 AllReplyListResult _$AllReplyListResultFromJson(Map<String, dynamic> json) =>
     AllReplyListResult(
-      replies: json['replies'] == null
+      replies: (json['replies'] as List<dynamic>?)
+          ?.map((e) => Reply.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      pagination: json['pagination'] == null
           ? null
-          : Replies.fromJson(json['replies'] as Map<String, dynamic>),
+          : Pagination.fromJson(json['pagination'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AllReplyListResultToJson(AllReplyListResult instance) =>
     <String, dynamic>{
       'replies': instance.replies,
+      'pagination': instance.pagination,
     };
