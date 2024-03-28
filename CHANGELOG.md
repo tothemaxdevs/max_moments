@@ -13,3 +13,7 @@ Reconfigure Moment to New API
 ## 0.0.4
 
 Remove unused files
+
+## 0.0.5
+
+Optimized

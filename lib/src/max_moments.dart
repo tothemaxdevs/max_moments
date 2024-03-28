@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:max_moments/max_moments.dart';
@@ -20,13 +21,14 @@ class MaxMoments extends StatefulWidget {
       required this.accessToken,
       this.onTapDelete,
       this.onTapEdit,
+      this.onMomentChanged,
       this.showMoreButton = true,
       this.additionalParams,
       this.additionalButton})
       : super(key: key);
 
   final String url, apiKey, accessToken;
-  final Function(Moment)? onTapEdit, onTapDelete;
+  final Function(Moment)? onTapEdit, onTapDelete, onMomentChanged;
   final bool? showMoreButton;
   final Map<String, dynamic>? additionalParams;
   final Widget? additionalButton;
@@ -77,7 +79,6 @@ class _MaxMomentsState extends State<MaxMoments> {
     final newPage = pageController?.page?.toInt() ?? 0;
     if (newPage != _currentPage) {
       _currentPage = newPage;
-      // Preload next video
 
       if (_currentPage < momentsList!.length - 1) {
         _controllers[_currentPage + 1].initialize().then((_) {
@@ -246,6 +247,7 @@ class _MaxMomentsState extends State<MaxMoments> {
           onPageChanged: (value) {
             setState(() {
               _currentPage = value;
+              widget.onMomentChanged!(momentsList![_currentPage]);
             });
             _getHitView();
           },
@@ -261,9 +263,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                 ),
                 Positioned(
                     bottom: 10,
-                    // right: 5,
                     child: Container(
-                        // height: 50,
                         width: MediaQuery.sizeOf(context).width,
                         color: Colors.transparent,
                         child: Column(
@@ -271,71 +271,73 @@ class _MaxMomentsState extends State<MaxMoments> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    readMoreFunc();
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 10),
-                                            height: 35,
-                                            width: 35,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.amber,
-                                                image: DecorationImage(
-                                                    image: NetworkImage(moment
-                                                            .restaurantPhoto ??
-                                                        ''),
-                                                    fit: BoxFit.cover)),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            moment.uploader ?? '',
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w400),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 15.0),
-                                        child: SizedBox(
-                                            width: MediaQuery.sizeOf(context)
-                                                    .width *
-                                                0.79,
-                                            height: height,
-                                            child: Text(
-                                              moment.caption ?? '',
-                                              style: TextStyle(
+                                Flexible(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      readMoreFunc();
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10),
+                                              height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.amber,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(moment
+                                                              .restaurantPhoto ??
+                                                          ''),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              moment.uploader ?? '',
+                                              style: const TextStyle(
                                                   color: Colors.white,
-                                                  overflow: readMore == false
-                                                      ? TextOverflow.ellipsis
-                                                      : null),
-                                            )),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                    ],
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.79,
+                                              height: height,
+                                              child: Text(
+                                                moment.caption ?? '',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    overflow: readMore == false
+                                                        ? TextOverflow.ellipsis
+                                                        : null),
+                                              )),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                const Spacer(),
+                                sizeW(10),
                                 Column(
                                   children: [
                                     widget.additionalButton ?? const SizedBox(),
@@ -370,8 +372,6 @@ class _MaxMomentsState extends State<MaxMoments> {
                             )
                           ],
                         ))),
-
-                //animated Like Icon
                 Align(
                   alignment: Alignment.center,
                   child: AnimatedContainer(
@@ -381,14 +381,10 @@ class _MaxMomentsState extends State<MaxMoments> {
                       child: SvgPicture.asset(
                         ImageConstants.like,
                         package: 'max_moments',
-                      )
-
-                      // curve: Curves.bounceInOut,
-                      ),
+                      )),
                 )
               ]),
             );
-            // return VideoPlayerScreen(videoUrl: videoUrls[index]);
           },
         ),
       ],
@@ -428,7 +424,6 @@ class _MaxMomentsState extends State<MaxMoments> {
         });
       },
       title: 'More',
-      maxChildSize: 0.25, // Full screen on scroll
       minChildSize: 0.25,
     );
   }
