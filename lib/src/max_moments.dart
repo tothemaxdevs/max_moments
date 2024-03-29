@@ -3,38 +3,46 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/src/bloc/moment_bloc.dart';
 import 'package:max_moments/src/components/comment_widget.dart';
 import 'package:max_moments/src/components/more_option_widget.dart';
+import 'package:max_moments/src/max_moments_manager.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 import 'package:max_moments/utils/view/page_view.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
 import 'components/moments_button.dart';
 
 class MaxMoments extends StatefulWidget {
-  const MaxMoments(
-      {Key? key,
-      required this.url,
-      required this.apiKey,
-      required this.accessToken,
-      this.onTapDelete,
-      this.onTapEdit,
-      this.onMomentChanged,
-      this.showMoreButton = true,
-      this.additionalParams,
-      this.additionalButton})
-      : super(key: key);
-
-  final String url, apiKey, accessToken;
-  final Function(Moment)? onTapEdit, onTapDelete, onMomentChanged;
-  final bool? showMoreButton;
+  final String url;
+  final String urlGateway;
+  final String apiKey;
+  final String accessToken;
+  final Function()? onEdited;
+  final Function(String?)? onTapDelete;
+  final Function(String?)? onMomentChanged;
+  final bool showMoreButton;
   final Map<String, dynamic>? additionalParams;
   final Widget? additionalButton;
 
+  const MaxMoments({
+    Key? key,
+    required this.url,
+    required this.urlGateway,
+    required this.apiKey,
+    required this.accessToken,
+    this.onEdited,
+    this.onTapDelete,
+    this.onMomentChanged,
+    this.showMoreButton = true,
+    this.additionalParams,
+    this.additionalButton,
+  }) : super(key: key);
+
   @override
-  State<MaxMoments> createState() => _MaxMomentsState();
+  _MaxMomentsState createState() => _MaxMomentsState();
 }
 
 class _MaxMomentsState extends State<MaxMoments> {
@@ -212,6 +220,9 @@ class _MaxMomentsState extends State<MaxMoments> {
                 log(index.toString());
                 momentsList![index].isLiked = state.data!.moment!.isLiked;
                 momentsList![index].likeCount = state.data!.moment!.likeCount;
+                momentsList![index].caption = state.data!.moment!.caption;
+                momentsList![index].allowComment =
+                    state.data!.moment!.allowComment;
                 momentsList![index].commentCount =
                     state.data!.moment!.commentCount;
               });
@@ -231,6 +242,18 @@ class _MaxMomentsState extends State<MaxMoments> {
               showToastError(context, state.message!);
             } else if (state is PostDoubleTapLikeErrorState) {
               showToastError(context, state.message!);
+            } else if (state is DeleteMomentLoadingState) {
+              _showLoading();
+            } else if (state is DeleteMomentLoadedState) {
+              momentsList!.removeAt(_currentPage);
+              Navigator.pop(context);
+              setState(() {});
+            } else if (state is DeleteMomentFailedState) {
+              Navigator.pop(context);
+              showToastError(context, state.message);
+            } else if (state is DeleteMomentErrorState) {
+              Navigator.pop(context);
+              showToastError(context, state.message);
             }
           },
         ),
@@ -245,11 +268,11 @@ class _MaxMomentsState extends State<MaxMoments> {
           itemCount: momentsList!.length,
           scrollDirection: Axis.vertical,
           onPageChanged: (value) {
-            setState(() {
-              _currentPage = value;
-              widget.onMomentChanged!(momentsList![_currentPage]);
-            });
+            _currentPage = value;
+            widget.onMomentChanged!(momentsList![_currentPage].id ?? '');
+
             _getHitView();
+            setState(() {});
           },
           itemBuilder: (BuildContext context, int index) {
             var moment = momentsList![index];
@@ -350,13 +373,14 @@ class _MaxMomentsState extends State<MaxMoments> {
                                         likeUnlike(index, id: moment.id);
                                       },
                                     ),
-                                    MomentsButton(
-                                      icon: ImageConstants.comment,
-                                      count: moment.commentCount,
-                                      onTap: () {
-                                        _showComment(moment);
-                                      },
-                                    ),
+                                    if (moment.allowComment == true)
+                                      MomentsButton(
+                                        icon: ImageConstants.comment,
+                                        count: moment.commentCount,
+                                        onTap: () {
+                                          _showComment(moment.id ?? '');
+                                        },
+                                      ),
                                     if (widget.showMoreButton == true)
                                       MomentsButton(
                                         icon: ImageConstants.more,
@@ -391,14 +415,41 @@ class _MaxMomentsState extends State<MaxMoments> {
     );
   }
 
-  _showComment(Moment moment) {
+  _showLoading() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              height: 100,
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const SpinKitFoldingCube(
+                color: Colors.amber,
+                size: 30.0,
+              ),
+            ));
+      },
+    );
+  }
+
+  _showComment(String id) {
     return bottomSheet(
       context,
       (BuildContext context, ScrollController scrollController) {
         return StatefulBuilder(builder: (BuildContext context, mySetState) {
           return Expanded(
               child: CommentWidget(
-            moment: moment,
+            momentId: id,
             controller: scrollController,
             accessToken: widget.accessToken,
             url: widget.url,
@@ -417,9 +468,32 @@ class _MaxMomentsState extends State<MaxMoments> {
         return StatefulBuilder(builder: (BuildContext context, mySetState) {
           return Expanded(
               child: MoreOptionWidget(
-            moment: moment,
-            onTapDelete: widget.onTapDelete,
-            onTapEdit: widget.onTapEdit,
+            onTapDelete: () {
+              Navigator.pop(context);
+              _bloc.add(DeleteMomentsEvent(
+                  accessToken: widget.accessToken,
+                  apiKey: widget.apiKey,
+                  url: widget.url,
+                  momentId: moment.id));
+            },
+            onTapEdit: () async {
+              bool? isEdited = await Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MaxMomentsManager(
+                            accessToken: widget.accessToken,
+                            apiKey: widget.apiKey,
+                            url: widget.url,
+                            urlGateway: widget.urlGateway,
+                            isEdit: true,
+                            momentFile: moment,
+                          )));
+
+              if (isEdited == true) {
+                _getHitView(id: moment.id);
+                widget.onEdited!();
+              }
+            },
           ));
         });
       },

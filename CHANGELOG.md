@@ -17,3 +17,7 @@ Remove unused files
 ## 0.0.5
 
 Optimized
+
+## 0.0.6
+
+Optimized

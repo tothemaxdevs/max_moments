@@ -8,12 +8,15 @@ class MomentAPI {
 
   static const String moments = 'moments';
   static const String momentDetail = 'moments';
+  static const String manageMoment = 'moment';
+
   static const String likeDislike = 'like-moment';
   static const String comment = 'comment-moment';
   static const String reply = 'reply-moment';
   static const String allReply = 'all-replies';
   static const String allComment = 'all-comments';
   static const String doubleTapLike = 'double-tap-like';
+  static const String saveFileGateWay = 'file-gateway';
 
   Map<String, dynamic>? nullBody = {};
 
@@ -113,6 +116,53 @@ class MomentAPI {
       required String apiKey}) async {
     Response response = await _apiService.post(
         '$url$doubleTapLike/$id', nullBody,
+        apiKey: apiKey, accessToken: accessToken);
+    return response;
+  }
+
+  Future<Response> postMomentFiles(
+      {body,
+      params,
+      required Function(int, int)? onReceiveProgress,
+      required String url,
+      required String accessToken,
+      required String apiKey}) async {
+    Response response = await _apiService.post('$url$saveFileGateWay', body,
+        formData: true,
+        parameter: params,
+        apiKey: apiKey,
+        accessToken: accessToken,
+        onReceiveProgress: onReceiveProgress);
+    return response;
+  }
+
+  Future<Response> postUpdateMoments(
+      {required id,
+      body,
+      required String url,
+      required String accessToken,
+      required String apiKey}) async {
+    Response response = await _apiService.put('$url$manageMoment/$id', body,
+        apiKey: apiKey, accessToken: accessToken);
+    return response;
+  }
+
+  Future<Response> createMoment(
+      {required body,
+      required String url,
+      required String accessToken,
+      required String apiKey}) async {
+    Response response = await _apiService.post('$url$manageMoment', body,
+        apiKey: apiKey, accessToken: accessToken);
+    return response;
+  }
+
+  Future<Response> deleteMoment(
+      {required id,
+      required String url,
+      required String accessToken,
+      required String apiKey}) async {
+    Response response = await _apiService.delete('$url$manageMoment/$id',
         apiKey: apiKey, accessToken: accessToken);
     return response;
   }

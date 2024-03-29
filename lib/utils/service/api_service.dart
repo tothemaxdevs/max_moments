@@ -38,7 +38,8 @@ class ApiService {
       bool formData = false,
       required String accessToken,
       required String apiKey,
-      parameter}) async {
+      parameter,
+      Function(int, int)? onReceiveProgress}) async {
     _dio.interceptors.add(LoggingInterceptor());
 
     if (withToken) {
@@ -52,8 +53,12 @@ class ApiService {
     var formBody = FormData.fromMap(body);
 
     try {
-      Response response = await _dio.post(url,
-          data: formData ? formBody : body, queryParameters: parameter);
+      Response response = await _dio.post(
+        url,
+        data: formData ? formBody : body,
+        queryParameters: parameter,
+        onSendProgress: onReceiveProgress,
+      );
 
       return response;
     } on DioException catch (error) {

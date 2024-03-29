@@ -4,10 +4,8 @@ import 'package:max_moments/src/constant/image_constants.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 
 class MoreOptionWidget extends StatefulWidget {
-  final Moment moment;
-  final Function(Moment)? onTapEdit, onTapDelete;
-  const MoreOptionWidget(
-      {super.key, required this.moment, this.onTapEdit, this.onTapDelete});
+  final Function()? onTapEdit, onTapDelete;
+  const MoreOptionWidget({super.key, this.onTapEdit, this.onTapDelete});
 
   @override
   State<MoreOptionWidget> createState() => _MoreOptionWidgetState();
@@ -26,15 +24,12 @@ class _MoreOptionWidgetState extends State<MoreOptionWidget> {
         body: Column(
           children: [
             ListTile(
-              leading: SvgPicture.asset(
-                ImageConstants.edit,
-                package: 'max_moments',
-              ),
-              title: const Text('Edit'),
-              onTap: () {
-                widget.onTapEdit!(widget.moment);
-              },
-            ),
+                leading: SvgPicture.asset(
+                  ImageConstants.edit,
+                  package: 'max_moments',
+                ),
+                title: const Text('Edit'),
+                onTap: widget.onTapEdit),
             ListTile(
                 leading: SvgPicture.asset(ImageConstants.delete,
                     color: Colors.red, package: 'max_moments'),
@@ -42,9 +37,7 @@ class _MoreOptionWidgetState extends State<MoreOptionWidget> {
                   'Delete',
                   style: TextStyle(color: Colors.red),
                 ),
-                onTap: () {
-                  widget.onTapDelete!(widget.moment);
-                })
+                onTap: widget.onTapDelete)
           ],
         ));
   }

@@ -198,3 +198,81 @@ class GetReplyDetailFailedState extends MomentsState {
   final String? message;
   GetReplyDetailFailedState(this.message);
 }
+
+class CreateMomentLoadingState extends MomentsState {
+  CreateMomentLoadingState();
+}
+
+class CreateMomentLoadedState extends MomentsState {
+  CreateMomentLoadedState();
+}
+
+class CreateMomentFailedState extends MomentsState {
+  final String message;
+  CreateMomentFailedState(this.message);
+}
+
+class CreateMomentErrorState extends MomentsState {
+  final String message;
+  CreateMomentErrorState(this.message);
+}
+
+class UpdateMomentLoadingState extends MomentsState {
+  UpdateMomentLoadingState();
+}
+
+class UpdateMomentLoadedState extends MomentsState {
+  UpdateMomentLoadedState();
+}
+
+class UpdateMomentFailedState extends MomentsState {
+  final String message;
+  UpdateMomentFailedState(this.message);
+}
+
+class UpdateMomentErrorState extends MomentsState {
+  final String message;
+  UpdateMomentErrorState(this.message);
+}
+
+class DeleteMomentLoadingState extends MomentsState {
+  DeleteMomentLoadingState();
+}
+
+class DeleteMomentLoadedState extends MomentsState {
+  DeleteMomentLoadedState();
+}
+
+class DeleteMomentFailedState extends MomentsState {
+  final String message;
+  DeleteMomentFailedState(this.message);
+}
+
+class DeleteMomentErrorState extends MomentsState {
+  final String message;
+  DeleteMomentErrorState(this.message);
+}
+
+class UploadMomentFileLoadingState extends MomentsState {
+  UploadMomentFileLoadingState();
+}
+
+class UploadMomentFileProgressState extends MomentsState {
+  final double progress;
+  UploadMomentFileProgressState(this.progress);
+}
+
+class UploadMomentFileLoadedState extends MomentsState {
+  Files? data;
+  UploadMomentFileLoadedState(this.data);
+}
+
+class UploadMomentFileFailedState extends MomentsState {
+  final String message;
+  UploadMomentFileFailedState(this.message);
+}
+
+class UploadMomentFileErrorState extends MomentsState {
+  final String message;
+  UploadMomentFileErrorState(this.message);
+}

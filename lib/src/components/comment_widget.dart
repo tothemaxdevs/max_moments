@@ -11,14 +11,14 @@ import 'package:max_moments/utils/view/view_utils.dart';
 
 class CommentWidget extends StatefulWidget {
   final ScrollController? controller;
-  final Moment moment;
+  final String? momentId;
   final String? url;
   final String? accessToken;
   final String? apiKey;
   const CommentWidget(
       {super.key,
       this.controller,
-      required this.moment,
+      required this.momentId,
       required this.accessToken,
       required this.apiKey,
       required this.url});
@@ -39,9 +39,9 @@ class _CommentWidgetState extends State<CommentWidget> {
   void initState() {
     prmComment['limit'] = 20;
     prmComment['page'] = 1;
-    commentBoxData = CommentBoxData(isReply: false, targetId: widget.moment.id);
+    commentBoxData = CommentBoxData(isReply: false, targetId: widget.momentId);
     _bloc.add(GetAllCommentEvent(
-        id: widget.moment.id,
+        id: widget.momentId,
         params: prmComment,
         url: widget.url,
         accessToken: widget.accessToken,
@@ -96,6 +96,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   url: widget.url,
                   accessToken: widget.accessToken,
                   apiKey: widget.apiKey));
+              FocusManager.instance.primaryFocus?.unfocus();
             } else if (state is PostCommentFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostCommentErrorState) {
@@ -107,6 +108,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   url: widget.url,
                   accessToken: widget.accessToken,
                   apiKey: widget.apiKey));
+              FocusManager.instance.primaryFocus?.unfocus();
             } else if (state is PostReplyFailedState) {
               showToastError(context, state.message!);
             } else if (state is PostReplyErrorState) {
@@ -228,7 +230,7 @@ class _CommentWidgetState extends State<CommentWidget> {
       isReply: commentBoxData!.isReply!,
       replyTo: commentBoxData!.replyTo,
       onTapCloseReply: () {
-        _setComment(targetId: widget.moment.id);
+        _setComment(targetId: widget.momentId);
       },
       onTapComment: (v) {
         Map<String, dynamic> body = {'comment': v};
@@ -249,7 +251,7 @@ class _CommentWidgetState extends State<CommentWidget> {
             accessToken: widget.accessToken,
             apiKey: widget.apiKey));
         commentBoxData!.isReply = false;
-        _setComment(targetId: widget.moment.id);
+        _setComment(targetId: widget.momentId);
         setState(() {});
       },
       avatar: '',

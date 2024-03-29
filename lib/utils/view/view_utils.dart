@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -191,7 +192,8 @@ RichText coloredText(String text) {
   );
 }
 
-AppBar appBar(BuildContext context, {List<Widget>? actions}) {
+AppBar appBar(BuildContext context,
+    {List<Widget>? actions, Color? color, Color? textColor, String? title}) {
   return AppBar(
     leading: IconButton(
         onPressed: () {
@@ -206,16 +208,16 @@ AppBar appBar(BuildContext context, {List<Widget>? actions}) {
     elevation: 0.0,
     // ignore: prefer_const_constructors
     title: Text(
-      'Moments',
-      style: const TextStyle(
-          color: Colors.white,
+      title ?? 'Moments',
+      style: TextStyle(
+          color: textColor ?? Colors.white,
           fontWeight: FontWeight.bold,
           // letterSpacing: 2.0,
           fontSize: 16),
     ),
     centerTitle: true,
-    foregroundColor: Colors.transparent,
-    backgroundColor: Colors.transparent,
+    foregroundColor: color ?? Colors.transparent,
+    backgroundColor: color ?? Colors.transparent,
     actions: actions,
   );
 }

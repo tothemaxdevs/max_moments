@@ -134,3 +134,55 @@ final class GetReplyDetailEvent extends MomentsEvent {
   GetReplyDetailEvent(this.id, this.indexComment,
       {required this.accessToken, required this.apiKey, required this.url});
 }
+
+class CreateMomentsEvent extends MomentsEvent {
+  Map<String, dynamic> body;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  CreateMomentsEvent(
+      {required this.body,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
+}
+
+class UpdateMomentsEvent extends MomentsEvent {
+  final String? momentId;
+  final Map? body;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  UpdateMomentsEvent(
+      {this.momentId,
+      this.body,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
+}
+
+class DeleteMomentsEvent extends MomentsEvent {
+  final String? momentId;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  DeleteMomentsEvent(
+      {this.momentId,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
+}
+
+class PostMomentFilesEvent extends MomentsEvent {
+  final Map<String, dynamic> params;
+  final Map<String, dynamic> body;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  PostMomentFilesEvent(
+      {required this.body,
+      required this.params,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
+}

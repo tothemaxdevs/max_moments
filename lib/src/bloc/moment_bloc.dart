@@ -4,6 +4,8 @@ import 'package:max_moments/src/api/moment_api.dart';
 import 'package:max_moments/src/models/all_comment_list_result/all_comment_list_result.dart';
 import 'package:max_moments/src/models/all_reply_list_result/all_reply_list_result.dart';
 import 'package:max_moments/src/models/comment_detail/comment_detail_result.dart';
+import 'package:max_moments/src/models/file_upload_gateway/file_upload.dart';
+import 'package:max_moments/src/models/file_upload_gateway/files.dart';
 import 'package:max_moments/src/models/moment_list_result/moment_list_result.dart';
 import 'package:max_moments/src/models/moments_detail_result/moments_detail_result.dart';
 import 'package:max_moments/src/models/post_comment_result/post_comment_result.dart';
@@ -30,6 +32,10 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
     on<GetCommentDetailEvent>(_getCommentDetail);
     on<GetReplyDetailEvent>(_getReplyDetail);
     on<PostDoubleTapLikeEvent>(_postDoubleTapLike);
+    on<CreateMomentsEvent>(_onAddMomentsEvent);
+    on<UpdateMomentsEvent>(_onUpdateMomentsEvent);
+    on<DeleteMomentsEvent>(_onDeleteMomentsEvent);
+    on<PostMomentFilesEvent>(_onPostFileMomentsEvent);
   }
 
   _getMomentList(GetMomentsListEvent event, Emitter<MomentsState> emit) async {
@@ -240,6 +246,95 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       }
     } on DioException catch (error) {
       emit(PostReplyErrorState(error.message));
+    }
+  }
+
+  _onAddMomentsEvent(
+      CreateMomentsEvent event, Emitter<MomentsState> emit) async {
+    emit(CreateMomentLoadingState());
+    try {
+      final data = await _api.createMoment(
+          body: event.body,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
+
+      if (data.statusCode == 200) {
+        emit(CreateMomentLoadedState());
+      } else {
+        emit(CreateMomentFailedState(data.statusMessage!));
+      }
+    } on DioException catch (error) {
+      emit(CreateMomentErrorState(error.message!));
+    }
+  }
+
+  _onUpdateMomentsEvent(
+      UpdateMomentsEvent event, Emitter<MomentsState> emit) async {
+    emit(UpdateMomentLoadingState());
+    try {
+      final data = await _api.postUpdateMoments(
+          id: event.momentId,
+          body: event.body,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
+      if (data.statusCode == 200) {
+        emit(UpdateMomentLoadedState());
+      } else {
+        emit(UpdateMomentFailedState(data.statusMessage!));
+      }
+    } on DioException catch (error) {
+      emit(UpdateMomentErrorState(error.message!));
+    }
+  }
+
+  _onDeleteMomentsEvent(
+      DeleteMomentsEvent event, Emitter<MomentsState> emit) async {
+    emit(DeleteMomentLoadingState());
+    try {
+      final data = await _api.deleteMoment(
+          id: event.momentId,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
+
+      if (data.statusCode == 200) {
+        emit(DeleteMomentLoadedState());
+      } else {
+        emit(DeleteMomentFailedState(data.statusMessage!));
+      }
+    } on DioException catch (error) {
+      emit(DeleteMomentErrorState(error.message!));
+    }
+  }
+
+  _onPostFileMomentsEvent(
+      PostMomentFilesEvent event, Emitter<MomentsState> emit) async {
+    emit(UploadMomentFileLoadingState());
+    try {
+      Response data = await _api.postMomentFiles(
+        params: event.params,
+        body: event.body,
+        apiKey: event.apiKey!,
+        url: event.url!,
+        accessToken: event.accessToken!,
+        onReceiveProgress: (received, total) {
+          final progress = (received / total) * 100;
+          emit(UploadMomentFileProgressState(progress));
+          emit(MomentsInitialState());
+        },
+      );
+
+      if (data.statusCode == 200) {
+        emit(UploadMomentFileLoadedState(
+            FileUpload.fromJson(ResponseData.fromJson(data.data).data)
+                .files![0]));
+      } else {
+        emit(UploadMomentFileFailedState(data.statusMessage!));
+      }
+    } on DioException catch (error) {
+      emit(UploadMomentFileErrorState(error.message!));
     }
   }
 }
