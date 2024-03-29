@@ -58,12 +58,7 @@ class _MaxMomentsState extends State<MaxMoments> {
 
   @override
   void initState() {
-    _bloc.add(GetMomentsListEvent(
-      params: widget.additionalParams,
-      url: widget.url,
-      accessToken: widget.accessToken,
-      apiKey: widget.apiKey,
-    ));
+    _getMomentList();
     super.initState();
   }
 
@@ -261,157 +256,169 @@ class _MaxMomentsState extends State<MaxMoments> {
     );
   }
 
-  Stack _buildView() {
-    return Stack(
-      children: [
-        PageView.builder(
-          itemCount: momentsList!.length,
-          scrollDirection: Axis.vertical,
-          onPageChanged: (value) {
-            _currentPage = value;
-            widget.onMomentChanged!(momentsList![_currentPage].id ?? '');
+  Widget _buildView() {
+    return RefreshIndicator(
+      onRefresh: () async {
+        _getMomentList();
+        _currentPage = 0;
+        setState(() {});
+      },
+      child: Stack(
+        children: [
+          PageView.builder(
+            itemCount: momentsList!.length,
+            scrollDirection: Axis.vertical,
+            onPageChanged: (value) {
+              _currentPage = value;
+              widget.onMomentChanged!(momentsList![_currentPage].id ?? '');
 
-            _getHitView();
-            setState(() {});
-          },
-          itemBuilder: (BuildContext context, int index) {
-            var moment = momentsList![index];
-            return GestureDetector(
-              onDoubleTap: () {
-                onDoubleTapLike(index, moment.id);
-              },
-              child: Stack(children: [
-                ReelsWidget(
-                  playerController: _controllers[index],
-                ),
-                Positioned(
-                    bottom: 10,
-                    child: Container(
-                        width: MediaQuery.sizeOf(context).width,
-                        color: Colors.transparent,
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Flexible(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      readMoreFunc();
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 10),
-                                              height: 35,
-                                              width: 35,
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.amber,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(moment
-                                                              .restaurantPhoto ??
-                                                          ''),
-                                                      fit: BoxFit.cover)),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              moment.uploader ?? '',
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w400),
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 15.0),
-                                          child: SizedBox(
-                                              width: MediaQuery.sizeOf(context)
-                                                      .width *
-                                                  0.79,
-                                              height: height,
-                                              child: Text(
-                                                moment.caption ?? '',
-                                                style: TextStyle(
+              _getHitView();
+              setState(() {});
+            },
+            itemBuilder: (BuildContext context, int index) {
+              var moment = momentsList![index];
+              return GestureDetector(
+                onDoubleTap: () {
+                  onDoubleTapLike(index, moment.id);
+                },
+                child: Stack(children: [
+                  ReelsWidget(
+                    playerController: _controllers[index],
+                  ),
+                  Positioned(
+                      bottom: 10,
+                      child: Container(
+                          width: MediaQuery.sizeOf(context).width,
+                          color: Colors.transparent,
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Flexible(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        readMoreFunc();
+                                      },
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 10),
+                                                height: 35,
+                                                width: 35,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: Colors.amber,
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            moment.restaurantPhoto ??
+                                                                ''),
+                                                        fit: BoxFit.cover)),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                moment.uploader ?? '',
+                                                style: const TextStyle(
                                                     color: Colors.white,
-                                                    overflow: readMore == false
-                                                        ? TextOverflow.ellipsis
-                                                        : null),
-                                              )),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                      ],
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 15.0),
+                                            child: SizedBox(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        0.79,
+                                                height: height,
+                                                child: Text(
+                                                  moment.caption ?? '',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      overflow:
+                                                          readMore == false
+                                                              ? TextOverflow
+                                                                  .ellipsis
+                                                              : null),
+                                                )),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                sizeW(10),
-                                Column(
-                                  children: [
-                                    widget.additionalButton ?? const SizedBox(),
-                                    MomentsButton(
-                                      icon: moment.isLiked == false
-                                          ? ImageConstants.unlike
-                                          : ImageConstants.like,
-                                      count: moment.likeCount,
-                                      onTap: () {
-                                        likeUnlike(index, id: moment.id);
-                                      },
-                                    ),
-                                    if (moment.allowComment == true)
+                                  sizeW(10),
+                                  Column(
+                                    children: [
+                                      widget.additionalButton ??
+                                          const SizedBox(),
                                       MomentsButton(
-                                        icon: ImageConstants.comment,
-                                        count: moment.commentCount,
+                                        icon: moment.isLiked == false
+                                            ? ImageConstants.unlike
+                                            : ImageConstants.like,
+                                        count: moment.likeCount,
                                         onTap: () {
-                                          _showComment(moment.id ?? '');
+                                          likeUnlike(index, id: moment.id);
                                         },
                                       ),
-                                    if (widget.showMoreButton == true)
-                                      MomentsButton(
-                                        icon: ImageConstants.more,
-                                        count: moment.commentCount,
-                                        withText: false,
-                                        onTap: () {
-                                          _showMoreOption(moment);
-                                        },
-                                      ),
-                                  ],
-                                )
-                              ],
-                            )
-                          ],
-                        ))),
-                Align(
-                  alignment: Alignment.center,
-                  child: AnimatedContainer(
-                      height: likeHeight,
-                      width: likeWidth,
-                      duration: const Duration(milliseconds: 100),
-                      child: SvgPicture.asset(
-                        ImageConstants.like,
-                        package: 'max_moments',
-                      )),
-                )
-              ]),
-            );
-          },
-        ),
-      ],
+                                      if (moment.allowComment == true)
+                                        MomentsButton(
+                                          icon: ImageConstants.comment,
+                                          count: moment.commentCount,
+                                          onTap: () {
+                                            _showComment(moment.id ?? '');
+                                          },
+                                        ),
+                                      if (widget.showMoreButton == true)
+                                        MomentsButton(
+                                          icon: ImageConstants.more,
+                                          count: moment.commentCount,
+                                          withText: false,
+                                          onTap: () {
+                                            _showMoreOption(moment);
+                                          },
+                                        ),
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
+                          ))),
+                  Align(
+                    alignment: Alignment.center,
+                    child: AnimatedContainer(
+                        height: likeHeight,
+                        width: likeWidth,
+                        duration: const Duration(milliseconds: 100),
+                        child: SvgPicture.asset(
+                          ImageConstants.like,
+                          package: 'max_moments',
+                        )),
+                  )
+                ]),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -507,5 +514,14 @@ class _MaxMomentsState extends State<MaxMoments> {
         url: widget.url,
         accessToken: widget.accessToken,
         apiKey: widget.apiKey));
+  }
+
+  void _getMomentList() {
+    _bloc.add(GetMomentsListEvent(
+      params: widget.additionalParams,
+      url: widget.url,
+      accessToken: widget.accessToken,
+      apiKey: widget.apiKey,
+    ));
   }
 }
