@@ -24,8 +24,11 @@ class ApiService {
     try {
       Response response = await _dio.get(url, queryParameters: queryParam);
 
+      log('RESPONSE $response');
       return response;
     } on DioException catch (error) {
+      log('===ERROR ${error.toString()}');
+      log('ERROR ${error.stackTrace.toString()}');
       log(error.toString());
 
       if (error.response!.statusCode == 401) {}
@@ -59,9 +62,11 @@ class ApiService {
         queryParameters: parameter,
         onSendProgress: onReceiveProgress,
       );
-
+      log('RESPONSE $response');
       return response;
     } on DioException catch (error) {
+      log('===ERROR ${error.response.toString()}');
+      log('ERROR ${error.stackTrace.toString()}');
       log(error.toString());
       return error.response!;
     }
@@ -90,9 +95,11 @@ class ApiService {
         url,
         data: formData ? formBody : body,
       );
-
+      log('RESPONSE $response');
       return response;
     } on DioException catch (error) {
+      log('===ERROR ${error.toString()}');
+      log('ERROR ${error.stackTrace.toString()}');
       log(error.toString());
       return error.response!;
     }
@@ -113,6 +120,8 @@ class ApiService {
     log(accessToken.toString());
     log(apiKey.toString());
     Response response = await _dio.delete(url);
+
+    log('RESPONSE $response');
     return response;
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:max_moments/max_moments.dart';
 
@@ -42,22 +44,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // return Scaffold(
+    //   body: MaxMoments(
+    //     url: 'https://merchant.backend.dev.orderia.id/api/merchant/',
+    //     urlGateway: 'https://file.dev.orderia.id/api/',
+    //     apiKey: '0f99beea-bfbf-11ec-9708-ef87d9a9c4d9',
+    //     accessToken:
+    //         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhjYTc4NjUzLTQxYWEtNGZkYi05YmFhLWY1Yjg5Yzk2N2JlZCIsImlhdCI6MTcxMTAxMDM3MX0.81DsEVobnt3oRloK7TsTYjs283t1P1wf_MWF5G5PUtY',
+    //     onMomentChanged: (v) {
+    //       log(v!);
+    //     },
+    //     onTapDelete: (v) {
+    //       log('Delete Tapped');
+    //       log(v!);
+    //     },
+    //     onEdited: () {},
+    //   ),
+    // );
+
     return Scaffold(
-      body: MaxMoments(
-        url: 'https://merchant.backend.dev.orderia.id/api/merchant/',
-        urlGateway: 'https://file.dev.orderia.id/api/',
-        apiKey: '0f99beea-bfbf-11ec-9708-ef87d9a9c4d9',
-        accessToken:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhjYTc4NjUzLTQxYWEtNGZkYi05YmFhLWY1Yjg5Yzk2N2JlZCIsImlhdCI6MTcxMTAxMDM3MX0.81DsEVobnt3oRloK7TsTYjs283t1P1wf_MWF5G5PUtY',
-        onMomentChanged: (v) {
-          log(v!);
-        },
-        onTapDelete: (v) {
-          log('Delete Tapped');
-          log(v!);
-        },
-        onEdited: () {},
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    createMoment();
+                  },
+                  child: Text('Pick file')))
+        ],
       ),
     );
+  }
+
+  void createMoment() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) {
+          return MaxMomentsTrimmer(
+            file,
+            url: '',
+            urlGateway: '',
+            apiKey: '',
+            accessToken: '',
+          );
+        }),
+      );
+    }
   }
 }
