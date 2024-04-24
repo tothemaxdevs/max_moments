@@ -36,6 +36,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
     on<UpdateMomentsEvent>(_onUpdateMomentsEvent);
     on<DeleteMomentsEvent>(_onDeleteMomentsEvent);
     on<PostMomentFilesEvent>(_onPostFileMomentsEvent);
+    on<PostMomentThumbnailEvent>(_onPostFileThumbnailsEvent);
   }
 
   _getMomentList(GetMomentsListEvent event, Emitter<MomentsState> emit) async {
@@ -335,6 +336,35 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       }
     } on DioException catch (error) {
       emit(UploadMomentFileErrorState(error.message!));
+    }
+  }
+
+  _onPostFileThumbnailsEvent(
+      PostMomentThumbnailEvent event, Emitter<MomentsState> emit) async {
+    emit(UploadMomentThumbnailLoadingState());
+    try {
+      Response data = await _api.postMomentFiles(
+        params: event.params,
+        body: event.body,
+        apiKey: event.apiKey!,
+        url: event.url!,
+        accessToken: event.accessToken!,
+        onReceiveProgress: (received, total) {
+          final progress = (received / total) * 100;
+          emit(UploadMomentThumbnailProgressState(progress));
+          emit(MomentsInitialState());
+        },
+      );
+
+      if (data.statusCode == 200) {
+        emit(UploadMomentThumbnailLoadedState(
+            FileUpload.fromJson(ResponseData.fromJson(data.data).data)
+                .files![0]));
+      } else {
+        emit(UploadMomentThumbnailFailedState(data.statusMessage!));
+      }
+    } on DioException catch (error) {
+      emit(UploadMomentThumbnailErrorState(error.message!));
     }
   }
 }

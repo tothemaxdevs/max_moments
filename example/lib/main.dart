@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:example/moments_list.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:max_moments/max_moments.dart';
@@ -44,24 +45,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   body: MaxMoments(
-    //     url: 'https://merchant.backend.dev.orderia.id/api/merchant/',
-    //     urlGateway: 'https://file.dev.orderia.id/api/',
-    //     apiKey: '0f99beea-bfbf-11ec-9708-ef87d9a9c4d9',
-    //     accessToken:
-    //         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhjYTc4NjUzLTQxYWEtNGZkYi05YmFhLWY1Yjg5Yzk2N2JlZCIsImlhdCI6MTcxMTAxMDM3MX0.81DsEVobnt3oRloK7TsTYjs283t1P1wf_MWF5G5PUtY',
-    //     onMomentChanged: (v) {
-    //       log(v!);
-    //     },
-    //     onTapDelete: (v) {
-    //       log('Delete Tapped');
-    //       log(v!);
-    //     },
-    //     onEdited: () {},
-    //   ),
-    // );
-
     return Scaffold(
       appBar: AppBar(),
       body: Column(
@@ -71,7 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     createMoment();
                   },
-                  child: Text('Pick file')))
+                  child: Text('Pick file'))),
+          Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MomentList()));
+                  },
+                  child: Text('Max List')))
         ],
       ),
     );

@@ -97,6 +97,7 @@ Widget netWorkImage(
   bool isRounded = false,
   bool isCircle = false,
   bool? isLoading = false,
+  String? customError,
 }) {
   return ClipRRect(
     borderRadius: borderRadius ??
@@ -133,7 +134,7 @@ Widget netWorkImage(
               ),
             ),
             errorWidget: (context, url, error) => SvgPicture.asset(
-              'assets/ic_profile_blank.svg',
+              customError ?? 'assets/ic_profile_blank.svg',
               package: 'max_moments',
               fit: fit ?? BoxFit.cover,
               height: height,

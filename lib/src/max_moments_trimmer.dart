@@ -87,7 +87,7 @@ class _MaxMomentsTrimmerState extends State<MaxMomentsTrimmer> {
           TextButton(
               onPressed: _progressVisibility ? null : () => _saveVideo(),
               child: Text(
-                'Selanjutya',
+                'Selanjutnya',
                 style: TextStyle(
                     fontWeight: FontWeight.bold, color: Colors.amber[700]),
               ))
@@ -112,7 +112,9 @@ class _MaxMomentsTrimmerState extends State<MaxMomentsTrimmer> {
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(16)),
-                    child: VideoViewer(trimmer: _trimmer),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: VideoViewer(trimmer: _trimmer)),
                   ),
                 )),
                 TextButton(
@@ -141,7 +143,7 @@ class _MaxMomentsTrimmerState extends State<MaxMomentsTrimmer> {
                     child: TrimViewer(
                       trimmer: _trimmer,
                       viewerHeight: 50.0,
-                      durationTextStyle: TextStyle(color: Colors.black),
+                      durationTextStyle: const TextStyle(color: Colors.black),
                       viewerWidth: MediaQuery.of(context).size.width,
                       durationStyle: DurationStyle.FORMAT_HH_MM_SS,
                       maxVideoLength: const Duration(minutes: 5),

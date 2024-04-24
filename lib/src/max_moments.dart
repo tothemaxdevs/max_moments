@@ -316,7 +316,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                                                     color: Colors.amber,
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            moment.restaurantPhoto ??
+                                                            moment.avatar ??
                                                                 ''),
                                                         fit: BoxFit.cover)),
                                               ),

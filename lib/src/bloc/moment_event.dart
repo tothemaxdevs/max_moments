@@ -186,3 +186,17 @@ class PostMomentFilesEvent extends MomentsEvent {
       required this.apiKey,
       required this.url});
 }
+
+class PostMomentThumbnailEvent extends MomentsEvent {
+  final Map<String, dynamic> params;
+  final Map<String, dynamic> body;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  PostMomentThumbnailEvent(
+      {required this.body,
+      required this.params,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url});
+}

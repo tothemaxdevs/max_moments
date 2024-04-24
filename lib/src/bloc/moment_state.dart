@@ -276,3 +276,25 @@ class UploadMomentFileErrorState extends MomentsState {
   final String message;
   UploadMomentFileErrorState(this.message);
 }
+
+class UploadMomentThumbnailLoadingState extends MomentsState {}
+
+class UploadMomentThumbnailProgressState extends MomentsState {
+  final double progress;
+  UploadMomentThumbnailProgressState(this.progress);
+}
+
+class UploadMomentThumbnailLoadedState extends MomentsState {
+  Files? data;
+  UploadMomentThumbnailLoadedState(this.data);
+}
+
+class UploadMomentThumbnailFailedState extends MomentsState {
+  final String message;
+  UploadMomentThumbnailFailedState(this.message);
+}
+
+class UploadMomentThumbnailErrorState extends MomentsState {
+  final String message;
+  UploadMomentThumbnailErrorState(this.message);
+}

@@ -27,3 +27,10 @@ Optimized
 Optimized
 
 ## 0.0.8
+
+
+Optimized
+
+## 0.0.9
+
+Add thumbnail picker and update modesl
