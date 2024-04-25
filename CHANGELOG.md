@@ -33,4 +33,8 @@ Optimized
 
 ## 0.0.9
 
-Add thumbnail picker and update modesl
+Add thumbnail picker and update models
+
+## 0.1.0
+
+Add views
