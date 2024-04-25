@@ -247,3 +247,13 @@ void showToastError(BuildContext context, String msg) {
             color: Colors.black,
           )));
 }
+
+String abbreviateNumber(int num) {
+  if (num >= 1000000) {
+    return (num / 1000000).toStringAsFixed(1) + 'm';
+  } else if (num >= 1000) {
+    return (num / 1000).toStringAsFixed(1) + 'k';
+  } else {
+    return num.toString();
+  }
+}

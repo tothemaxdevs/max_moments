@@ -371,10 +371,18 @@ class _MaxMomentsState extends State<MaxMoments> {
                                       widget.additionalButton ??
                                           const SizedBox(),
                                       MomentsButton(
+                                        icon: ImageConstants.view,
+                                        count:
+                                            abbreviateNumber(moment.views ?? 0),
+                                        onTap: () {
+                                          likeUnlike(index, id: moment.id);
+                                        },
+                                      ),
+                                      MomentsButton(
                                         icon: moment.isLiked == false
                                             ? ImageConstants.unlike
                                             : ImageConstants.like,
-                                        count: moment.likeCount,
+                                        count: '${moment.likeCount ?? 0}',
                                         onTap: () {
                                           likeUnlike(index, id: moment.id);
                                         },
@@ -382,7 +390,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                                       if (moment.allowComment == true)
                                         MomentsButton(
                                           icon: ImageConstants.comment,
-                                          count: moment.commentCount,
+                                          count: '${moment.commentCount ?? 0}',
                                           onTap: () {
                                             _showComment(moment.id ?? '');
                                           },
@@ -390,7 +398,6 @@ class _MaxMomentsState extends State<MaxMoments> {
                                       if (widget.showMoreButton == true)
                                         MomentsButton(
                                           icon: ImageConstants.more,
-                                          count: moment.commentCount,
                                           withText: false,
                                           onTap: () {
                                             _showMoreOption(moment);

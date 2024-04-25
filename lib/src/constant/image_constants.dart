@@ -9,4 +9,5 @@ class ImageConstants {
   static const String isMerchant = 'assets/ic_merchant.svg';
   static const String edit = 'assets/ic_edit.svg';
   static const String delete = 'assets/ic_delete.svg';
+  static const String view = 'assets/ic_views.svg';
 }

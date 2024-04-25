@@ -5,7 +5,7 @@ import 'package:max_moments/utils/view/view_utils.dart';
 class MomentsButton extends StatelessWidget {
   final String? icon;
   final Function()? onTap;
-  final int? count;
+  final String? count;
   final bool? withText;
   const MomentsButton(
       {super.key, this.count, this.icon, this.onTap, this.withText = true});
@@ -28,7 +28,7 @@ class MomentsButton extends StatelessWidget {
             if (withText!) sizeH(6),
             if (withText!)
               Text(
-                '${count ?? ''}',
+                count ?? '',
                 style: const TextStyle(color: Colors.white),
               ),
             const SizedBox(
