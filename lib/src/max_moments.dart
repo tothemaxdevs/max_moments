@@ -374,9 +374,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                                         icon: ImageConstants.view,
                                         count:
                                             abbreviateNumber(moment.views ?? 0),
-                                        onTap: () {
-                                          likeUnlike(index, id: moment.id);
-                                        },
+                                        onTap: null,
                                       ),
                                       MomentsButton(
                                         icon: moment.isLiked == false
