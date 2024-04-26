@@ -1,7 +1,7 @@
 name: max_moments
 description: Print dialog for thermal-printer plugin.
 homepage: https://github.com/tothemaxdevs/max_moments
-version: 1.1.0+1
+version: 1.2.0+1
 
 environment:
   sdk: '>=3.2.2 <4.0.0'

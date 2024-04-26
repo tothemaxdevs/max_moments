@@ -38,3 +38,11 @@ Add thumbnail picker and update models
 ## 0.1.0
 
 Add views
+
+## 0.1.1
+
+Add views
+
+## 0.1.2
+
+Add views
