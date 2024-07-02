@@ -8,7 +8,7 @@ class MomentAPI {
 
   static const String moments = 'moments';
   static const String momentDetail = 'moments';
-  static const String manageMoment = 'moment';
+  static const String manageMoment = 'moments';
 
   static const String likeDislike = 'like-moment';
   static const String comment = 'comment-moment';

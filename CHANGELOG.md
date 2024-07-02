@@ -46,3 +46,8 @@ Add views
 ## 0.1.2
 
 Add views
+
+
+## 0.1.4
+
+Handle null

@@ -125,21 +125,6 @@ class _MaxMomentsManagerState extends State<MaxMomentsManager> {
           padding: const EdgeInsets.all(16),
           shrinkWrap: true,
           children: [
-            MaxField(
-              hint: 'Masukan judul event',
-              label: 'Caption',
-              isDescription: true,
-              limit: 300,
-              controller: captionController,
-              validator: (v) {
-                if (v!.isEmpty) {
-                  return 'Tidak boleh kosong';
-                }
-                return null;
-              },
-              maxlines: 3,
-            ),
-            if (widget.isEdit == false) sizeH(16),
             if (widget.isEdit == false)
               Row(
                 children: [
@@ -224,6 +209,21 @@ class _MaxMomentsManagerState extends State<MaxMomentsManager> {
                 ],
               ),
             sizeH(16),
+            MaxField(
+              hint: 'Masukan caption',
+              label: 'Caption',
+              isDescription: true,
+              limit: 300,
+              controller: captionController,
+              validator: (v) {
+                if (v!.isEmpty) {
+                  return 'Tidak boleh kosong';
+                }
+                return null;
+              },
+              maxlines: 3,
+            ),
+            if (widget.isEdit == false) sizeH(16),
             ListTile(
                 contentPadding: EdgeInsets.zero,
                 title: const Text(
@@ -231,7 +231,7 @@ class _MaxMomentsManagerState extends State<MaxMomentsManager> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  'Customer bisa mengomentari moment anda bila diaktifkan',
+                  'Izinkan pelanggan untuk memberikan komentar.',
                   style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                 ),
                 trailing: CupertinoSwitch(
@@ -340,7 +340,7 @@ class _MaxMomentsManagerState extends State<MaxMomentsManager> {
         contentType: MediaType('video', 'mp4'));
     params['folder_path'] = 'video/moments/${widget.outputVideoPath}';
     params['save_to'] = 'AWS';
-    params['max_size'] = 10000;
+    params['max_size'] = 1000000;
     momentBloc!.add(PostMomentFilesEvent(
         body: body,
         params: params,
