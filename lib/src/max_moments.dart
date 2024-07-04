@@ -285,14 +285,10 @@ class _MaxMomentsState extends State<MaxMoments> {
                   ReelsWidget(
                     playerController: _controllers[index],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Positioned(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          width: double.infinity,
+                  Positioned(
+                      bottom: 10,
+                      child: Container(
+                          width: MediaQuery.sizeOf(context).width,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -303,15 +299,6 @@ class _MaxMomentsState extends State<MaxMoments> {
                               end: Alignment.bottomCenter,
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                      bottom: 10,
-                      child: Container(
-                          width: MediaQuery.sizeOf(context).width,
-                          color: Colors.transparent,
                           child: Column(
                             children: [
                               Row(
