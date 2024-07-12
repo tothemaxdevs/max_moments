@@ -17,11 +17,12 @@ class _MomentListState extends State<MomentList> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MaxMoments(
-        url: '',
-        urlGateway: '',
-        apiKey: '',
+        url: 'https://content.dev.orderia.id/api/v1/',
+        urlGateway: 'https://file.dev.orderia.id/api/',
+        apiKey: '0f99beea-bfbf-11ec-9708-ef87d9a9c4d9',
         additionalParams: params,
-        accessToken: '',
+        accessToken:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ1ZjY0NTNjLTZhNzEtNDIzNS05MGRmLWZiMWFhNWNhNzFlYSIsImlhdCI6MTcyMDA4MDc2NX0.LwURhC0BO6K3WOucfgYFJ0P2ZQ86yslbjHNyolfu45A',
         onMomentChanged: (v) {
           log(v!);
         },

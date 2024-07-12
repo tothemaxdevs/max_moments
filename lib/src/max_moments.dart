@@ -287,18 +287,8 @@ class _MaxMomentsState extends State<MaxMoments> {
                   ),
                   Positioned(
                       bottom: 10,
-                      child: Container(
+                      child: SizedBox(
                           width: MediaQuery.sizeOf(context).width,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.black.withOpacity(0.0),
-                                Colors.black.withOpacity(0.5),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                          ),
                           child: Column(
                             children: [
                               Row(
