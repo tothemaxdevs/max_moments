@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,7 @@ class MaxMoments extends StatefulWidget {
 }
 
 class _MaxMomentsState extends State<MaxMoments> {
-  late List<CachedVideoPlayerController> _controllers;
+  late List<CachedVideoPlayerPlusController> _controllers;
   int _currentPage = 0;
   bool isMute = false;
   bool readMore = false;
@@ -194,8 +195,11 @@ class _MaxMomentsState extends State<MaxMoments> {
                 momentsList = state.data!.moments;
                 _controllers = List.generate(
                   momentsList!.length,
-                  (index) => CachedVideoPlayerController.networkUrl(
-                      Uri.parse(momentsList![index].media ?? '')),
+                  (index) => CachedVideoPlayerPlusController.networkUrl(
+                    Uri.parse(
+                      momentsList![index].media ?? '',
+                    ),
+                  ),
                 );
                 _initializeControllers();
                 pageController?.addListener(_onPageChanged);
