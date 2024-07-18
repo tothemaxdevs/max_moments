@@ -203,7 +203,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 itemBuilder: (BuildContext context, int i) {
                   var replies = comments.reply![i];
                   return UserCommentWidget(
-                    avatar: replies.userAvatar!,
+                    avatar: replies.userAvatar ?? '',
                     comment: replies.reply!,
                     name: replies.name!,
                     passedTime: replies.momentsPassed!,

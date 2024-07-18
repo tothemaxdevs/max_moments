@@ -60,3 +60,7 @@ Update handle blank
 ## 0.1.6
 
 Update handle blank
+
+## 0.1.7
+
+Update handle null avatar
