@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:example/moments_list.dart';
+import 'package:example/moments_video_player.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:max_moments/max_moments.dart';
@@ -61,7 +62,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => MomentList()));
                   },
-                  child: Text('Max List')))
+                  child: Text('Max List'))),
+          Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MomentVideoPlayer()));
+                  },
+                  child: Text('Moment Video Player')))
         ],
       ),
     );

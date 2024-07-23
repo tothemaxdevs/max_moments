@@ -64,3 +64,11 @@ Update handle blank
 ## 0.1.7
 
 Update handle null avatar
+
+## 0.1.8
+
+Update add bookmark
+
+## 0.1.9
+
+Add additional video player
