@@ -1,6 +1,8 @@
 class ImageConstants {
   static const String like = 'assets/ic_love_filled.svg';
   static const String unlike = 'assets/ic_love.svg';
+  static const String bookmarked = 'assets/ic_bookmark_filled.svg';
+  static const String bookmark = 'assets/ic_bookmark.svg';
   static const String comment = 'assets/ic_comment.svg';
   static const String more = 'assets/ic_more.svg';
   static const String back = 'assets/ic_back.svg';

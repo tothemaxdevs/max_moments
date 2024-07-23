@@ -19,12 +19,14 @@ import 'components/moments_button.dart';
 class MaxMoments extends StatefulWidget {
   final String url;
   final String urlGateway;
+  final String urlCustomer;
   final String apiKey;
   final String accessToken;
   final Function()? onEdited;
   final Function(String?)? onTapDelete;
   final Function(String?)? onMomentChanged;
   final bool showMoreButton;
+  final bool showBookmark;
   final Map<String, dynamic>? additionalParams;
   final Widget? additionalButton;
 
@@ -32,12 +34,14 @@ class MaxMoments extends StatefulWidget {
     Key? key,
     required this.url,
     required this.urlGateway,
+    required this.urlCustomer,
     required this.apiKey,
     required this.accessToken,
     this.onEdited,
     this.onTapDelete,
     this.onMomentChanged,
     this.showMoreButton = true,
+    this.showBookmark = false,
     this.additionalParams,
     this.additionalButton,
   }) : super(key: key);
@@ -136,6 +140,19 @@ class _MaxMomentsState extends State<MaxMoments> {
         apiKey: widget.apiKey));
   }
 
+  void bookmark(int index, {String? id}) {
+    Map<String, dynamic> payload = {};
+    payload['target_id'] = id;
+    payload['target_type'] = 'RestaurantMoment';
+
+    _bloc.add(PostTapBookmarkEvent(
+        id: id,
+        url: widget.urlCustomer,
+        accessToken: widget.accessToken,
+        apiKey: widget.apiKey,
+        body: payload));
+  }
+
   void muteUnmuteAll() {
     isMute = !isMute;
     if (isMute == true) {
@@ -220,6 +237,7 @@ class _MaxMomentsState extends State<MaxMoments> {
                 momentsList![index].isLiked = state.data!.moment!.isLiked;
                 momentsList![index].likeCount = state.data!.moment!.likeCount;
                 momentsList![index].caption = state.data!.moment!.caption;
+                momentsList![index].isBookmark = state.data!.moment!.isBookmark;
                 momentsList![index].allowComment =
                     state.data!.moment!.allowComment;
                 momentsList![index].commentCount =
@@ -253,6 +271,13 @@ class _MaxMomentsState extends State<MaxMoments> {
             } else if (state is DeleteMomentErrorState) {
               Navigator.pop(context);
               showToastError(context, state.message);
+            } else if (state is PostBookmarkLoadingState) {
+            } else if (state is PostBookmarkLoadedState) {
+              _getHitView(id: state.id);
+            } else if (state is PostBookmarkFailedState) {
+              showToastError(context, state.message!);
+            } else if (state is PostBookmarkErrorState) {
+              showToastError(context, state.message!);
             }
           },
         ),
@@ -394,6 +419,15 @@ class _MaxMomentsState extends State<MaxMoments> {
                                           count: '${moment.commentCount ?? 0}',
                                           onTap: () {
                                             _showComment(moment.id ?? '');
+                                          },
+                                        ),
+                                      if (widget.showBookmark == true)
+                                        MomentsButton(
+                                          icon: moment.isBookmark == false
+                                              ? ImageConstants.bookmark
+                                              : ImageConstants.bookmarked,
+                                          onTap: () {
+                                            bookmark(index, id: moment.id);
                                           },
                                         ),
                                       if (widget.showMoreButton == true)

@@ -13,6 +13,7 @@ class MomentAPI {
   static const String likeDislike = 'like-moment';
   static const String comment = 'comment-moment';
   static const String reply = 'reply-moment';
+  static const String bookmark = 'bookmark';
   static const String allReply = 'all-replies';
   static const String allComment = 'all-comments';
   static const String doubleTapLike = 'double-tap-like';
@@ -163,6 +164,17 @@ class MomentAPI {
       required String accessToken,
       required String apiKey}) async {
     Response response = await _apiService.delete('$url$manageMoment/$id',
+        apiKey: apiKey, accessToken: accessToken);
+    return response;
+  }
+
+  Future<Response> postBookmark(
+      {id,
+      params,
+      required String url,
+      required String accessToken,
+      required String apiKey}) async {
+    Response response = await _apiService.post('$url$bookmark', params,
         apiKey: apiKey, accessToken: accessToken);
     return response;
   }

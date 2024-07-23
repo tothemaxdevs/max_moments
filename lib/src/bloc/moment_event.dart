@@ -200,3 +200,17 @@ class PostMomentThumbnailEvent extends MomentsEvent {
       required this.apiKey,
       required this.url});
 }
+
+final class PostTapBookmarkEvent extends MomentsEvent {
+  final String? id;
+  final String? url;
+  final String? accessToken;
+  final String? apiKey;
+  final Map? body;
+  PostTapBookmarkEvent(
+      {this.id,
+      required this.accessToken,
+      required this.apiKey,
+      required this.url,
+      required this.body});
+}

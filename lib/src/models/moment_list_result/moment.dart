@@ -29,6 +29,8 @@ class Moment {
   int? commentCount;
   @JsonKey(name: 'is_liked')
   bool? isLiked;
+  @JsonKey(name: 'is_bookmark')
+  bool? isBookmark;
 
   Moment({
     this.id,
@@ -47,11 +49,12 @@ class Moment {
     this.likeCount,
     this.commentCount,
     this.isLiked,
+    this.isBookmark,
   });
 
   @override
   String toString() {
-    return 'Moment(id: $id, caption: $caption, allowComment: $allowComment, thumbnail: $thumbnail, mediaType: $mediaType, media: $media, views: $views, restaurantId: $restaurantId, userId: $userId, uploader: $uploader, avatar: $avatar, createdAt: $createdAt, momentsPassed: $momentsPassed, likeCount: $likeCount, commentCount: $commentCount, isLiked: $isLiked)';
+    return 'Moment(id: $id, caption: $caption, allowComment: $allowComment, thumbnail: $thumbnail, mediaType: $mediaType, media: $media, views: $views, restaurantId: $restaurantId, userId: $userId, uploader: $uploader, avatar: $avatar, createdAt: $createdAt, momentsPassed: $momentsPassed, likeCount: $likeCount, commentCount: $commentCount, isLiked: $isLiked, isBookmark: $isBookmark)';
   }
 
   factory Moment.fromJson(Map<String, dynamic> json) {
@@ -77,6 +80,7 @@ class Moment {
     int? likeCount,
     int? commentCount,
     bool? isLiked,
+    bool? isBookmark,
   }) {
     return Moment(
       id: id ?? this.id,
@@ -95,6 +99,7 @@ class Moment {
       likeCount: likeCount ?? this.likeCount,
       commentCount: commentCount ?? this.commentCount,
       isLiked: isLiked ?? this.isLiked,
+      isBookmark: isBookmark ?? this.isBookmark,
     );
   }
 }

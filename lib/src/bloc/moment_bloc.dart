@@ -37,6 +37,7 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
     on<DeleteMomentsEvent>(_onDeleteMomentsEvent);
     on<PostMomentFilesEvent>(_onPostFileMomentsEvent);
     on<PostMomentThumbnailEvent>(_onPostFileThumbnailsEvent);
+    on<PostTapBookmarkEvent>(_postBookmark);
   }
 
   _getMomentList(GetMomentsListEvent event, Emitter<MomentsState> emit) async {
@@ -365,6 +366,24 @@ class MomentsBloc extends Bloc<MomentsEvent, MomentsState> {
       }
     } on DioException catch (error) {
       emit(UploadMomentThumbnailErrorState(error.message!));
+    }
+  }
+
+  _postBookmark(PostTapBookmarkEvent event, Emitter<MomentsState> emit) async {
+    try {
+      emit(PostBookmarkLoadingState());
+      Response response = await _api.postBookmark(
+          params: event.body,
+          apiKey: event.apiKey!,
+          url: event.url!,
+          accessToken: event.accessToken!);
+      if (response.statusCode == 200) {
+        emit(PostBookmarkLoadedState(data: response, id: event.id));
+      } else {
+        emit(PostBookmarkFailedState(response.statusMessage));
+      }
+    } on DioException catch (error) {
+      emit(PostBookmarkErrorState(error.message));
     }
   }
 }

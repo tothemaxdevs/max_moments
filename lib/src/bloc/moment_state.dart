@@ -298,3 +298,21 @@ class UploadMomentThumbnailErrorState extends MomentsState {
   final String message;
   UploadMomentThumbnailErrorState(this.message);
 }
+
+class PostBookmarkLoadingState extends MomentsState {}
+
+class PostBookmarkLoadedState extends MomentsState {
+  final Response? data;
+  String? id;
+  PostBookmarkLoadedState({this.data, this.id});
+}
+
+class PostBookmarkErrorState extends MomentsState {
+  final String? message;
+  PostBookmarkErrorState(this.message);
+}
+
+class PostBookmarkFailedState extends MomentsState {
+  final String? message;
+  PostBookmarkFailedState(this.message);
+}
