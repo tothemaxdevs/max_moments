@@ -1,19 +1,19 @@
+import 'dart:async';
 import 'dart:developer';
 
-import 'package:cached_video_player_plus/cached_video_player_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/src/bloc/moment_bloc.dart';
 import 'package:max_moments/src/components/comment_widget.dart';
 import 'package:max_moments/src/components/more_option_widget.dart';
+import 'package:max_moments/src/config/whitecodel_reels.dart';
 import 'package:max_moments/src/max_moments_manager.dart';
 import 'package:max_moments/src/models/moment_list_result/moment.dart';
 import 'package:max_moments/utils/view/page_view.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
+import 'package:video_player/video_player.dart';
 import 'components/moments_button.dart';
 
 class MaxMoments extends StatefulWidget {
@@ -51,10 +51,10 @@ class MaxMoments extends StatefulWidget {
 }
 
 class _MaxMomentsState extends State<MaxMoments> {
-  late List<CachedVideoPlayerPlusController> _controllers;
   int _currentPage = 0;
   bool isMute = false;
   bool readMore = false;
+  bool isFirstLoading = true;
   double? height = 20.0;
   double? likeHeight = 0.0;
   double? likeWidth = 0.0;
@@ -69,36 +69,7 @@ class _MaxMomentsState extends State<MaxMoments> {
 
   @override
   void dispose() {
-    pageController?.removeListener(_onPageChanged);
-    pageController?.dispose();
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
     super.dispose();
-  }
-
-  void _initializeControllers() async {
-    await Future.wait(
-        _controllers.map((controller) => controller.initialize()));
-    setState(() {});
-  }
-
-  void _onPageChanged() {
-    final newPage = pageController?.page?.toInt() ?? 0;
-    if (newPage != _currentPage) {
-      _currentPage = newPage;
-
-      if (_currentPage < momentsList!.length - 1) {
-        _controllers[_currentPage + 1].initialize().then((_) {
-          setState(() {});
-        });
-        _controllers[_currentPage - 1].initialize().then((_) {
-          setState(() {});
-        });
-      }
-    }
-
-    _getHitView();
   }
 
   void onDoubleTapLike(int index, String? id) {
@@ -153,16 +124,12 @@ class _MaxMomentsState extends State<MaxMoments> {
         body: payload));
   }
 
-  void muteUnmuteAll() {
+  void muteUnmuteAll(VideoPlayerController videoPlayerController) {
     isMute = !isMute;
     if (isMute == true) {
-      for (var element in _controllers) {
-        element.setVolume(0.0);
-      }
+      videoPlayerController.setVolume(0.0);
     } else {
-      for (var element in _controllers) {
-        element.setVolume(10.0);
-      }
+      videoPlayerController.setVolume(10.0);
     }
     setState(() {});
   }
@@ -178,7 +145,7 @@ class _MaxMomentsState extends State<MaxMoments> {
       appBar: appBar(context, actions: [
         GestureDetector(
           onTap: () {
-            muteUnmuteAll();
+            // muteUnmuteAll();
           },
           child: Container(
               height: 30,
@@ -210,17 +177,8 @@ class _MaxMomentsState extends State<MaxMoments> {
             } else if (state is GetMomentsListLoadedState) {
               setState(() {
                 momentsList = state.data!.moments;
-                _controllers = List.generate(
-                  momentsList!.length,
-                  (index) => CachedVideoPlayerPlusController.networkUrl(
-                    Uri.parse(
-                      momentsList![index].media ?? '',
-                    ),
-                  ),
-                );
-                _initializeControllers();
-                pageController?.addListener(_onPageChanged);
                 mode = PageMode.loaded;
+                isFirstLoading = false;
               });
             } else if (state is GetMomentsListEmptyState) {
               mode = PageMode.empty;
@@ -285,183 +243,383 @@ class _MaxMomentsState extends State<MaxMoments> {
     );
   }
 
-  Widget _buildView() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _getMomentList();
-        _currentPage = 0;
-        setState(() {});
-      },
-      child: Stack(
-        children: [
-          PageView.builder(
-            itemCount: momentsList!.length,
-            scrollDirection: Axis.vertical,
-            onPageChanged: (value) {
-              _currentPage = value;
-              widget.onMomentChanged!(momentsList![_currentPage].id ?? '');
+  // Widget _buildView() {
+  //   return Expanded(
+  //       child: WhiteCodelReels(
+  //     key: UniqueKey(),
+  //     context: context,
+  //     loader: const Center(
+  //       child: CircularProgressIndicator(),
+  //     ),
+  //     videoList: List.generate(
+  //         momentsList!.length, (index) => momentsList![index].media!),
+  //     isCaching: true,
+  //     // builder:
+  //     //     (context, index, child, videoPlayerController, pageController) {
+  //     //   return Stack(children: [
+  //     //     Positioned(
+  //     //         bottom: 10,
+  //     //         child: SizedBox(
+  //     //             width: MediaQuery.sizeOf(context).width,
+  //     //             child: Column(
+  //     //               children: [
+  //     //                 Row(
+  //     //                   crossAxisAlignment: CrossAxisAlignment.end,
+  //     //                   children: [
+  //     //                     Flexible(
+  //     //                       child: GestureDetector(
+  //     //                         onTap: () {
+  //     //                           readMoreFunc();
+  //     //                         },
+  //     //                         child: Column(
+  //     //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //     //                           children: [
+  //     //                             Row(
+  //     //                               children: [
+  //     //                                 Container(
+  //     //                                   margin:
+  //     //                                       const EdgeInsets.only(left: 10),
+  //     //                                   height: 35,
+  //     //                                   width: 35,
+  //     //                                   decoration: BoxDecoration(
+  //     //                                       shape: BoxShape.circle,
+  //     //                                       color: Colors.amber,
+  //     //                                       image: DecorationImage(
+  //     //                                           image: NetworkImage(
+  //     //                                               momentsList![index]
+  //     //                                                       .avatar ??
+  //     //                                                   ''),
+  //     //                                           fit: BoxFit.cover)),
+  //     //                                 ),
+  //     //                                 const SizedBox(
+  //     //                                   width: 10,
+  //     //                                 ),
+  //     //                                 Text(
+  //     //                                   momentsList![index].uploader ?? '',
+  //     //                                   style: const TextStyle(
+  //     //                                       color: Colors.white,
+  //     //                                       fontWeight: FontWeight.w400),
+  //     //                                 ),
+  //     //                                 const SizedBox(
+  //     //                                   width: 10,
+  //     //                                 ),
+  //     //                               ],
+  //     //                             ),
+  //     //                             const SizedBox(
+  //     //                               height: 10,
+  //     //                             ),
+  //     //                             Padding(
+  //     //                               padding:
+  //     //                                   const EdgeInsets.only(left: 15.0),
+  //     //                               child: SizedBox(
+  //     //                                   width:
+  //     //                                       MediaQuery.sizeOf(context).width *
+  //     //                                           0.79,
+  //     //                                   height: height,
+  //     //                                   child: Text(
+  //     //                                     momentsList![index].caption ?? '',
+  //     //                                     style: TextStyle(
+  //     //                                         color: Colors.white,
+  //     //                                         overflow: readMore == false
+  //     //                                             ? TextOverflow.ellipsis
+  //     //                                             : null),
+  //     //                                   )),
+  //     //                             ),
+  //     //                             const SizedBox(
+  //     //                               height: 10,
+  //     //                             ),
+  //     //                           ],
+  //     //                         ),
+  //     //                       ),
+  //     //                     ),
+  //     //                     sizeW(10),
+  //     //                     Column(
+  //     //                       children: [
+  //     //                         widget.additionalButton ?? const SizedBox(),
+  //     //                         MomentsButton(
+  //     //                           icon: ImageConstants.view,
+  //     //                           count: abbreviateNumber(
+  //     //                               momentsList![index].views ?? 0),
+  //     //                           onTap: null,
+  //     //                         ),
+  //     //                         MomentsButton(
+  //     //                           icon: momentsList![index].isLiked == false
+  //     //                               ? ImageConstants.unlike
+  //     //                               : ImageConstants.like,
+  //     //                           count:
+  //     //                               '${momentsList![index].likeCount ?? 0}',
+  //     //                           onTap: () {
+  //     //                             likeUnlike(index,
+  //     //                                 id: momentsList![index].id);
+  //     //                           },
+  //     //                         ),
+  //     //                         if (momentsList![index].allowComment == true)
+  //     //                           MomentsButton(
+  //     //                             icon: ImageConstants.comment,
+  //     //                             count:
+  //     //                                 '${momentsList![index].commentCount ?? 0}',
+  //     //                             onTap: () {
+  //     //                               _showComment(
+  //     //                                   momentsList![index].id ?? '');
+  //     //                             },
+  //     //                           ),
+  //     //                         if (widget.showBookmark == true)
+  //     //                           MomentsButton(
+  //     //                             icon:
+  //     //                                 momentsList![index].isBookmark == false
+  //     //                                     ? ImageConstants.bookmark
+  //     //                                     : ImageConstants.bookmarked,
+  //     //                             onTap: () {
+  //     //                               bookmark(index,
+  //     //                                   id: momentsList![index].id);
+  //     //                             },
+  //     //                           ),
+  //     //                         if (widget.showMoreButton == true)
+  //     //                           MomentsButton(
+  //     //                             icon: ImageConstants.more,
+  //     //                             withText: false,
+  //     //                             onTap: () {
+  //     //                               _showMoreOption(momentsList![index]);
+  //     //                             },
+  //     //                           ),
+  //     //                       ],
+  //     //                     )
+  //     //                   ],
+  //     //                 )
+  //     //               ],
+  //     //             ))),
+  //     //     Align(
+  //     //       alignment: Alignment.center,
+  //     //       child: AnimatedContainer(
+  //     //           height: likeHeight,
+  //     //           width: likeWidth,
+  //     //           duration: const Duration(milliseconds: 100),
+  //     //           child: SvgPicture.asset(
+  //     //             ImageConstants.like,
+  //     //             package: 'max_moments',
+  //     //           )),
+  //     //     )
+  //     //   ]);
+  //     // }),
+  //   ));
+  // }
 
-              _getHitView();
-              setState(() {});
-            },
-            itemBuilder: (BuildContext context, int index) {
-              var moment = momentsList![index];
-              return GestureDetector(
-                onDoubleTap: () {
-                  onDoubleTapLike(index, moment.id);
-                },
-                child: Stack(children: [
-                  ReelsWidget(
-                    playerController: _controllers[index],
-                  ),
-                  Positioned(
-                      bottom: 10,
-                      child: SizedBox(
-                          width: MediaQuery.sizeOf(context).width,
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Flexible(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        readMoreFunc();
-                                      },
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(
-                                                    left: 10),
-                                                height: 35,
-                                                width: 35,
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.amber,
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            moment.avatar ??
-                                                                ''),
-                                                        fit: BoxFit.cover)),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                moment.uploader ?? '',
-                                                style: const TextStyle(
+  Widget _buildView() {
+    return isFirstLoading == true
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : WhiteCodelReels(
+            key: UniqueKey(),
+            context: context,
+            loader: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            isCaching: true,
+            videoList: isFirstLoading == true
+                ? []
+                : List.generate(
+                    momentsList!.length, (index) => momentsList![index].media!),
+            builder:
+                (context, index, child, videoPlayerController, pageController) {
+              bool isReadMore = false;
+              StreamController<double> videoProgressController =
+                  StreamController<double>();
+
+              videoPlayerController.addListener(() {
+                double videoProgress =
+                    videoPlayerController.value.position.inMilliseconds /
+                        videoPlayerController.value.duration.inMilliseconds;
+                videoProgressController.add(videoProgress);
+              });
+
+              // DISINI
+
+              return Stack(children: [
+                child,
+                Positioned(
+                    bottom: 10,
+                    child: SizedBox(
+                        width: MediaQuery.sizeOf(context).width,
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Flexible(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      readMoreFunc();
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10),
+                                              height: 35,
+                                              width: 35,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.amber,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          momentsList![index]
+                                                                  .avatar ??
+                                                              ''),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              momentsList![index].uploader ??
+                                                  '',
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.79,
+                                              height: height,
+                                              child: Text(
+                                                momentsList![index].caption ??
+                                                    '',
+                                                style: TextStyle(
                                                     color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 15.0),
-                                            child: SizedBox(
-                                                width:
-                                                    MediaQuery.sizeOf(context)
-                                                            .width *
-                                                        0.79,
-                                                height: height,
-                                                child: Text(
-                                                  moment.caption ?? '',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      overflow:
-                                                          readMore == false
-                                                              ? TextOverflow
-                                                                  .ellipsis
-                                                              : null),
-                                                )),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
+                                                    overflow: readMore == false
+                                                        ? TextOverflow.ellipsis
+                                                        : null),
+                                              )),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  sizeW(10),
-                                  Column(
-                                    children: [
-                                      widget.additionalButton ??
-                                          const SizedBox(),
+                                ),
+                                sizeW(10),
+                                Column(
+                                  children: [
+                                    widget.additionalButton ?? const SizedBox(),
+                                    MomentsButton(
+                                      icon: ImageConstants.view,
+                                      count: abbreviateNumber(
+                                          momentsList![index].views ?? 0),
+                                      onTap: null,
+                                    ),
+                                    MomentsButton(
+                                      icon: momentsList![index].isLiked == false
+                                          ? ImageConstants.unlike
+                                          : ImageConstants.like,
+                                      count:
+                                          '${momentsList![index].likeCount ?? 0}',
+                                      onTap: () {
+                                        likeUnlike(index,
+                                            id: momentsList![index].id);
+                                      },
+                                    ),
+                                    if (momentsList![index].allowComment ==
+                                        true)
                                       MomentsButton(
-                                        icon: ImageConstants.view,
+                                        icon: ImageConstants.comment,
                                         count:
-                                            abbreviateNumber(moment.views ?? 0),
-                                        onTap: null,
-                                      ),
-                                      MomentsButton(
-                                        icon: moment.isLiked == false
-                                            ? ImageConstants.unlike
-                                            : ImageConstants.like,
-                                        count: '${moment.likeCount ?? 0}',
+                                            '${momentsList![index].commentCount ?? 0}',
                                         onTap: () {
-                                          likeUnlike(index, id: moment.id);
+                                          _showComment(
+                                              momentsList![index].id ?? '');
                                         },
                                       ),
-                                      if (moment.allowComment == true)
-                                        MomentsButton(
-                                          icon: ImageConstants.comment,
-                                          count: '${moment.commentCount ?? 0}',
-                                          onTap: () {
-                                            _showComment(moment.id ?? '');
-                                          },
-                                        ),
-                                      if (widget.showBookmark == true)
-                                        MomentsButton(
-                                          icon: moment.isBookmark == false
-                                              ? ImageConstants.bookmark
-                                              : ImageConstants.bookmarked,
-                                          onTap: () {
-                                            bookmark(index, id: moment.id);
-                                          },
-                                        ),
-                                      if (widget.showMoreButton == true)
-                                        MomentsButton(
-                                          icon: ImageConstants.more,
-                                          withText: false,
-                                          onTap: () {
-                                            _showMoreOption(moment);
-                                          },
-                                        ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ))),
-                  Align(
-                    alignment: Alignment.center,
-                    child: AnimatedContainer(
-                        height: likeHeight,
-                        width: likeWidth,
-                        duration: const Duration(milliseconds: 100),
-                        child: SvgPicture.asset(
-                          ImageConstants.like,
-                          package: 'max_moments',
-                        )),
-                  )
-                ]),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+                                    if (widget.showBookmark == true)
+                                      MomentsButton(
+                                        icon: momentsList![index].isBookmark ==
+                                                false
+                                            ? ImageConstants.bookmark
+                                            : ImageConstants.bookmarked,
+                                        onTap: () {
+                                          bookmark(index,
+                                              id: momentsList![index].id);
+                                        },
+                                      ),
+                                    if (widget.showMoreButton == true)
+                                      MomentsButton(
+                                        icon: ImageConstants.more,
+                                        withText: false,
+                                        onTap: () {
+                                          _showMoreOption(momentsList![index]);
+                                        },
+                                      ),
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ))),
+                Align(
+                  alignment: Alignment.center,
+                  child: AnimatedContainer(
+                      height: likeHeight,
+                      width: likeWidth,
+                      duration: const Duration(milliseconds: 100),
+                      child: SvgPicture.asset(
+                        ImageConstants.like,
+                        package: 'max_moments',
+                      )),
+                ),
+                StreamBuilder(
+                  stream: videoProgressController.stream,
+                  builder: (context, snapshot) {
+                    return Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          thumbShape: SliderComponentShape.noThumb,
+                          overlayShape: SliderComponentShape.noOverlay,
+                          trackHeight: 2,
+                        ),
+                        child: Slider(
+                          value: (snapshot.data ?? 0).clamp(0.0, 1.0),
+                          min: 0.0,
+                          max: 1.0,
+                          activeColor: Colors.white,
+                          inactiveColor: Colors.grey,
+
+                          onChanged: (value) {
+                            final position = videoPlayerController
+                                    .value.duration.inMilliseconds *
+                                value;
+                            videoPlayerController.seekTo(
+                                Duration(milliseconds: position.toInt()));
+                          },
+                          // onChangeEnd: (value) {
+                          //   videoPlayerController.play();
+                          // },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ]);
+            });
   }
 
   _showLoading() {

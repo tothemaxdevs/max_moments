@@ -1,4 +1,4 @@
-import 'package:cached_video_player_plus/cached_video_player_plus.dart';
+import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:max_moments/max_moments.dart';
 import 'package:max_moments/utils/view/view_utils.dart';
@@ -16,12 +16,12 @@ class MaxMomentsVideoPlayer extends StatefulWidget {
 }
 
 class _MaxMomentsVideoPlayerState extends State<MaxMomentsVideoPlayer> {
-  late CachedVideoPlayerPlusController controller;
+  late VideoPlayerController controller;
   bool isMute = false;
   @override
   void initState() {
     super.initState();
-    controller = CachedVideoPlayerPlusController.networkUrl(
+    controller = VideoPlayerController.networkUrl(
       Uri.parse(
         widget.url,
       ),
@@ -29,7 +29,6 @@ class _MaxMomentsVideoPlayerState extends State<MaxMomentsVideoPlayer> {
       httpHeaders: {
         'Connection': 'keep-alive',
       },
-      invalidateCacheIfOlderThan: const Duration(days: 5),
     )..initialize().then((value) async {
         await controller.setLooping(true);
         controller.play();
@@ -75,7 +74,7 @@ class _MaxMomentsVideoPlayerState extends State<MaxMomentsVideoPlayer> {
             child: controller.value.isInitialized
                 ? AspectRatio(
                     aspectRatio: controller.value.aspectRatio,
-                    child: CachedVideoPlayerPlus(controller),
+                    child: VideoPlayer(controller),
                   )
                 : const CircularProgressIndicator.adaptive(),
           ),

@@ -137,14 +137,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-  cached_video_player_plus:
-    dependency: transitive
-    description:
-      name: cached_video_player_plus
-      sha256: c671d60a59a018401c07def77d49c749b394b4c6ff489b2b3ceff9ab06822f27
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   characters:
     dependency: transitive
     description:
@@ -368,14 +360,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.6"
-  get_storage:
-    dependency: transitive
-    description:
-      name: get_storage
-      sha256: "39db1fffe779d0c22b3a744376e86febe4ade43bf65e06eab5af707dc84185a2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   getwidget:
     dependency: transitive
     description:
@@ -534,7 +518,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.8.0+1"
+    version: "1.9.0+1"
   meta:
     dependency: transitive
     description:
@@ -904,10 +888,10 @@ packages:
     dependency: transitive
     description:
       name: video_player
-      sha256: afc65f4b8bcb2c188f64a591f84fb471f4f2e19fc607c65fd8d2f8fedb3dec23
+      sha256: e30df0d226c4ef82e2c150ebf6834b3522cf3f654d8e2f9419d376cdc071425d
       url: "https://pub.dev"
     source: hosted
-    version: "2.8.3"
+    version: "2.9.1"
   video_player_android:
     dependency: transitive
     description:
@@ -936,10 +920,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_web
-      sha256: fb3bbeaf0302cb0c31340ebd6075487939aa1fe3b379d1a8784ef852b679940e
+      sha256: "6dcdd298136523eaf7dfc31abaf0dfba9aa8a8dbc96670e87e9d42b6f2caf774"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.15"
+    version: "2.3.2"
   video_thumbnail:
     dependency: transitive
     description:
@@ -956,6 +940,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   vm_service:
     dependency: transitive
     description:
@@ -1022,4 +1014,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.3.0 <4.0.0"
-  flutter: ">=3.16.0"
+  flutter: ">=3.19.0"

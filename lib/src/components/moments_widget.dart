@@ -1,9 +1,9 @@
-import 'package:cached_video_player_plus/cached_video_player_plus.dart';
+import 'package:video_player/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:max_moments/max_moments.dart';
 
 class ReelsWidget extends StatefulWidget {
-  final CachedVideoPlayerPlusController playerController;
+  final VideoPlayerController playerController;
 
   const ReelsWidget({Key? key, required this.playerController})
       : super(key: key);
@@ -13,7 +13,7 @@ class ReelsWidget extends StatefulWidget {
 }
 
 class _ReelsWidgetState extends State<ReelsWidget> {
-  late CachedVideoPlayerPlusController _videoPlayerController;
+  late VideoPlayerController _videoPlayerController;
 
   bool pause = false;
 
@@ -56,10 +56,10 @@ class _ReelsWidgetState extends State<ReelsWidget> {
               ? Center(
                   child: AspectRatio(
                     aspectRatio: _videoPlayerController.value.aspectRatio,
-                    child: CachedVideoPlayerPlus(_videoPlayerController),
+                    child: VideoPlayer(_videoPlayerController),
                   ),
                 )
-              : CachedVideoPlayerPlus(_videoPlayerController),
+              : VideoPlayer(_videoPlayerController),
           pause
               ? Align(
                   alignment: Alignment.center,
