@@ -29,7 +29,7 @@ class WhiteCodelReels extends GetView<WhiteCodelReelsController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.delete<WhiteCodelReelsController>();
+    // Get.delete<WhiteCodelReelsController>();
     Get.lazyPut<WhiteCodelReelsController>(() => WhiteCodelReelsController(
         reelsVideoList: videoList ?? [], isCaching: isCaching));
     return Scaffold(

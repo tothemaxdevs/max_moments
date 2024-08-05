@@ -138,21 +138,21 @@ class _MaxMomentsState extends State<MaxMoments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBar(context, actions: [
-        GestureDetector(
-          onTap: () {
-            // muteUnmuteAll();
-          },
-          child: Container(
-              height: 30,
-              width: 30,
-              color: Colors.transparent,
-              child: Icon(
-                isMute == false
-                    ? Icons.volume_up_outlined
-                    : Icons.volume_off_outlined,
-                color: Colors.white,
-              )),
-        )
+        // GestureDetector(
+        //   onTap: () {
+        //     // muteUnmuteAll();
+        //   },
+        //   child: Container(
+        //       height: 30,
+        //       width: 30,
+        //       color: Colors.transparent,
+        //       child: Icon(
+        //         isMute == false
+        //             ? Icons.volume_up_outlined
+        //             : Icons.volume_off_outlined,
+        //         color: Colors.white,
+        //       )),
+        // )
       ]),
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: true,
@@ -236,167 +236,6 @@ class _MaxMomentsState extends State<MaxMoments> {
     );
   }
 
-  // Widget _buildView() {
-  //   return Expanded(
-  //       child: WhiteCodelReels(
-  //     key: UniqueKey(),
-  //     context: context,
-  //     loader: const Center(
-  //       child: CircularProgressIndicator(),
-  //     ),
-  //     videoList: List.generate(
-  //         momentsList!.length, (index) => momentsList![index].media!),
-  //     isCaching: true,
-  //     // builder:
-  //     //     (context, index, child, videoPlayerController, pageController) {
-  //     //   return Stack(children: [
-  //     //     Positioned(
-  //     //         bottom: 10,
-  //     //         child: SizedBox(
-  //     //             width: MediaQuery.sizeOf(context).width,
-  //     //             child: Column(
-  //     //               children: [
-  //     //                 Row(
-  //     //                   crossAxisAlignment: CrossAxisAlignment.end,
-  //     //                   children: [
-  //     //                     Flexible(
-  //     //                       child: GestureDetector(
-  //     //                         onTap: () {
-  //     //                           readMoreFunc();
-  //     //                         },
-  //     //                         child: Column(
-  //     //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //     //                           children: [
-  //     //                             Row(
-  //     //                               children: [
-  //     //                                 Container(
-  //     //                                   margin:
-  //     //                                       const EdgeInsets.only(left: 10),
-  //     //                                   height: 35,
-  //     //                                   width: 35,
-  //     //                                   decoration: BoxDecoration(
-  //     //                                       shape: BoxShape.circle,
-  //     //                                       color: Colors.amber,
-  //     //                                       image: DecorationImage(
-  //     //                                           image: NetworkImage(
-  //     //                                               momentsList![index]
-  //     //                                                       .avatar ??
-  //     //                                                   ''),
-  //     //                                           fit: BoxFit.cover)),
-  //     //                                 ),
-  //     //                                 const SizedBox(
-  //     //                                   width: 10,
-  //     //                                 ),
-  //     //                                 Text(
-  //     //                                   momentsList![index].uploader ?? '',
-  //     //                                   style: const TextStyle(
-  //     //                                       color: Colors.white,
-  //     //                                       fontWeight: FontWeight.w400),
-  //     //                                 ),
-  //     //                                 const SizedBox(
-  //     //                                   width: 10,
-  //     //                                 ),
-  //     //                               ],
-  //     //                             ),
-  //     //                             const SizedBox(
-  //     //                               height: 10,
-  //     //                             ),
-  //     //                             Padding(
-  //     //                               padding:
-  //     //                                   const EdgeInsets.only(left: 15.0),
-  //     //                               child: SizedBox(
-  //     //                                   width:
-  //     //                                       MediaQuery.sizeOf(context).width *
-  //     //                                           0.79,
-  //     //                                   height: height,
-  //     //                                   child: Text(
-  //     //                                     momentsList![index].caption ?? '',
-  //     //                                     style: TextStyle(
-  //     //                                         color: Colors.white,
-  //     //                                         overflow: readMore == false
-  //     //                                             ? TextOverflow.ellipsis
-  //     //                                             : null),
-  //     //                                   )),
-  //     //                             ),
-  //     //                             const SizedBox(
-  //     //                               height: 10,
-  //     //                             ),
-  //     //                           ],
-  //     //                         ),
-  //     //                       ),
-  //     //                     ),
-  //     //                     sizeW(10),
-  //     //                     Column(
-  //     //                       children: [
-  //     //                         widget.additionalButton ?? const SizedBox(),
-  //     //                         MomentsButton(
-  //     //                           icon: ImageConstants.view,
-  //     //                           count: abbreviateNumber(
-  //     //                               momentsList![index].views ?? 0),
-  //     //                           onTap: null,
-  //     //                         ),
-  //     //                         MomentsButton(
-  //     //                           icon: momentsList![index].isLiked == false
-  //     //                               ? ImageConstants.unlike
-  //     //                               : ImageConstants.like,
-  //     //                           count:
-  //     //                               '${momentsList![index].likeCount ?? 0}',
-  //     //                           onTap: () {
-  //     //                             likeUnlike(index,
-  //     //                                 id: momentsList![index].id);
-  //     //                           },
-  //     //                         ),
-  //     //                         if (momentsList![index].allowComment == true)
-  //     //                           MomentsButton(
-  //     //                             icon: ImageConstants.comment,
-  //     //                             count:
-  //     //                                 '${momentsList![index].commentCount ?? 0}',
-  //     //                             onTap: () {
-  //     //                               _showComment(
-  //     //                                   momentsList![index].id ?? '');
-  //     //                             },
-  //     //                           ),
-  //     //                         if (widget.showBookmark == true)
-  //     //                           MomentsButton(
-  //     //                             icon:
-  //     //                                 momentsList![index].isBookmark == false
-  //     //                                     ? ImageConstants.bookmark
-  //     //                                     : ImageConstants.bookmarked,
-  //     //                             onTap: () {
-  //     //                               bookmark(index,
-  //     //                                   id: momentsList![index].id);
-  //     //                             },
-  //     //                           ),
-  //     //                         if (widget.showMoreButton == true)
-  //     //                           MomentsButton(
-  //     //                             icon: ImageConstants.more,
-  //     //                             withText: false,
-  //     //                             onTap: () {
-  //     //                               _showMoreOption(momentsList![index]);
-  //     //                             },
-  //     //                           ),
-  //     //                       ],
-  //     //                     )
-  //     //                   ],
-  //     //                 )
-  //     //               ],
-  //     //             ))),
-  //     //     Align(
-  //     //       alignment: Alignment.center,
-  //     //       child: AnimatedContainer(
-  //     //           height: likeHeight,
-  //     //           width: likeWidth,
-  //     //           duration: const Duration(milliseconds: 100),
-  //     //           child: SvgPicture.asset(
-  //     //             ImageConstants.like,
-  //     //             package: 'max_moments',
-  //     //           )),
-  //     //     )
-  //     //   ]);
-  //     // }),
-  //   ));
-  // }
-
   Widget _buildView() {
     return isFirstLoading == true
         ? const Center(
@@ -423,8 +262,6 @@ class _MaxMomentsState extends State<MaxMoments> {
                         videoPlayerController.value.duration.inMilliseconds;
                 videoProgressController.add(videoProgress);
               });
-
-              // DISINI
 
               return Stack(children: [
                 child,

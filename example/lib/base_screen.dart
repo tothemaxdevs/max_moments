@@ -65,7 +65,6 @@ class _BaseScreenState extends State<BaseScreen> {
         children: [
           Expanded(
             child: WhiteCodelReels(
-                key: UniqueKey(),
                 context: context,
                 loader: const Center(
                   child: CircularProgressIndicator(),
