@@ -346,14 +346,6 @@ class _MaxMomentsState extends State<MaxMoments> {
                                 sizeW(10),
                                 Column(
                                   children: [
-                                    MomentsButton(
-                                      icon: ImageConstants.view,
-                                      count: abbreviateNumber(_currentPage),
-                                      onTap: () {
-                                        _currentPage++;
-                                        setState(() {});
-                                      },
-                                    ),
                                     widget.additionalButton ?? const SizedBox(),
                                     MomentsButton(
                                       icon: ImageConstants.view,
