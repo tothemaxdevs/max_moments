@@ -67,11 +67,6 @@ class _MaxMomentsState extends State<MaxMoments> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void onDoubleTapLike(int index, String? id) {
     likeHeight = 55.0;
     likeWidth = 55.0;
@@ -188,19 +183,17 @@ class _MaxMomentsState extends State<MaxMoments> {
               mode = PageMode.error;
             } else if (state is GetMomentDetailLoadingState) {
             } else if (state is GetMomentDetailLoadedState) {
-              setState(() {
-                int index = momentsList!.indexWhere(
-                    (element) => element.id == state.data!.moment!.id);
-                log(index.toString());
-                momentsList![index].isLiked = state.data!.moment!.isLiked;
-                momentsList![index].likeCount = state.data!.moment!.likeCount;
-                momentsList![index].caption = state.data!.moment!.caption;
-                momentsList![index].isBookmark = state.data!.moment!.isBookmark;
-                momentsList![index].allowComment =
-                    state.data!.moment!.allowComment;
-                momentsList![index].commentCount =
-                    state.data!.moment!.commentCount;
-              });
+              int index = momentsList!.indexWhere(
+                  (element) => element.id == state.data!.moment!.id);
+              log(index.toString());
+              momentsList![index].isLiked = state.data!.moment!.isLiked;
+              momentsList![index].likeCount = state.data!.moment!.likeCount;
+              momentsList![index].caption = state.data!.moment!.caption;
+              momentsList![index].isBookmark = state.data!.moment!.isBookmark;
+              momentsList![index].allowComment =
+                  state.data!.moment!.allowComment;
+              momentsList![index].commentCount =
+                  state.data!.moment!.commentCount;
             } else if (state is GetMomentDetailFailedState) {
             } else if (state is GetMomentDetailErrorState) {
             } else if (state is PostLikeDislikeLoadingState) {
@@ -416,10 +409,8 @@ class _MaxMomentsState extends State<MaxMoments> {
               child: CircularProgressIndicator(),
             ),
             isCaching: true,
-            videoList: isFirstLoading == true
-                ? []
-                : List.generate(
-                    momentsList!.length, (index) => momentsList![index].media!),
+            videoList: List.generate(
+                momentsList!.length, (index) => momentsList![index].media!),
             builder:
                 (context, index, child, videoPlayerController, pageController) {
               bool isReadMore = false;
@@ -518,6 +509,14 @@ class _MaxMomentsState extends State<MaxMoments> {
                                 sizeW(10),
                                 Column(
                                   children: [
+                                    MomentsButton(
+                                      icon: ImageConstants.view,
+                                      count: abbreviateNumber(_currentPage),
+                                      onTap: () {
+                                        _currentPage++;
+                                        setState(() {});
+                                      },
+                                    ),
                                     widget.additionalButton ?? const SizedBox(),
                                     MomentsButton(
                                       icon: ImageConstants.view,

@@ -2,6 +2,7 @@ library max_moments;
 
 export 'src/components/moments_widget.dart';
 export 'package:max_moments/src/constant/image_constants.dart';
+export 'package:max_moments/src/config/whitecodel_reels.dart';
 export 'package:max_moments/src/models/moments_model.dart';
 export 'package:max_moments/src/max_moments.dart';
 export 'package:max_moments/src/max_moments_trimmer.dart';

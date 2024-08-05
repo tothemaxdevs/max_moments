@@ -219,6 +219,7 @@ AppBar appBar(BuildContext context,
     centerTitle: true,
     foregroundColor: color ?? Colors.transparent,
     backgroundColor: color ?? Colors.transparent,
+    shadowColor: Colors.transparent,
     actions: actions,
   );
 }

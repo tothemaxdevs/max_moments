@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:example/base_screen.dart';
 import 'package:example/moments_list.dart';
 import 'package:example/moments_video_player.dart';
 import 'package:file_picker/file_picker.dart';
@@ -71,7 +72,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         MaterialPageRoute(
                             builder: (context) => MomentVideoPlayer()));
                   },
-                  child: Text('Moment Video Player')))
+                  child: Text('Moment Video Player'))),
+          Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => BaseScreen()));
+                  },
+                  child: Text('Moment Test')))
         ],
       ),
     );
