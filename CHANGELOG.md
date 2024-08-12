@@ -72,3 +72,8 @@ Update add bookmark
 ## 0.1.9
 
 Add additional video player
+
+
+## 0.2.0-pre
+
+Add additional video player

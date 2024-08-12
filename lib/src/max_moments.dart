@@ -248,8 +248,7 @@ class _MaxMomentsState extends State<MaxMoments> {
               child: CircularProgressIndicator(),
             ),
             isCaching: true,
-            videoList: List.generate(
-                momentsList!.length, (index) => momentsList![index].media!),
+            videoList: momentsList!.map((e) => e.media!).toList(),
             builder:
                 (context, index, child, videoPlayerController, pageController) {
               bool isReadMore = false;
